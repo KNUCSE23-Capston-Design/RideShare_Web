@@ -13,7 +13,7 @@ const Carpool = () => {
 
     const getData = async (screen) => {
         try {
-            const jsonData = await axios.get(`http://192.168.0.107:8080/parties/${screen}`);
+            const jsonData = await axios.get(`http://localhost:8080/parties/${screen}`);
 
             const dataArray = jsonData.data;
             const listData = dataArray.map((item) => ({

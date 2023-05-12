@@ -8,7 +8,12 @@ const Home = () => {
         <div>
             <h1>Home</h1>
             <input type="text" placeholder="목적지를 입력해주세요" value={searchText} />
+            <li>
             <Link to="/Carpool">carpool</Link>
+            </li>
+            <li>
+            <Link to="/Taxi">taxi</Link>
+            </li>
         </div>
     );
 };
