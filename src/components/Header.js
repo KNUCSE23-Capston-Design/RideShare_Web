@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -18,7 +18,14 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <button>Login</button>
+            <Link to="/Login">
+              <button>Login</button>
+            </Link>
+          </li>
+          <li>
+            <Link to="/SignUp">
+              <button>SignUp</button>
+            </Link>
           </li>
         </ul>
       </nav>
