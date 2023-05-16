@@ -8,14 +8,14 @@ import { NavermapsProvider } from "react-naver-maps";
 import Mappage from "./Mappage";
 
 const Carpool = () => {
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
     const [showCarpool, setShowCarpool] = useRecoilState(showCarpoolState);
     const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
     const screenType = "carpools";
     const isMapLoading = useRecoilValue(isMapLoadingState);
 
-  return (
-        <MapDiv style={{ width: "100%", height: "600px" }}>
+    return (
+        <MapDiv style={{ width: "100%", height: "600px", position: "relative" }}>
             <Mappage />
         </MapDiv>
     );
