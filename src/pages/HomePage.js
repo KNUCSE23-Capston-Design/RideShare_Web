@@ -9,6 +9,7 @@ const Home = () => {
                     <h1>Logo</h1>
                 </a>
                 <Link to="/carpool">carpoo</Link>
+                <Link to="/Taxi">taxi</Link>
                 <button>taxi</button>
                 <button>login</button>
                 <button>my info</button>
