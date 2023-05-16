@@ -12,18 +12,19 @@ import SignUp from "./pages/SignUpPage";
 
 function App() {
   return (
-    <RecoilRoot>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Carpool" element={<Carpool />} />
-        <Route path="/Taxi" element={<Taxi />} />
-        <Route path="/Info" element={<Info />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/SignUp" element={<SignUp />} />
-      </Routes>
-    </RecoilRoot>
-  );
+    <NavermapsProvider ncpClientId="9mq5hlqrjf">  
+      <RecoilRoot>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Carpool" element={<Carpool />} />
+          <Route path="/Taxi" element={<Taxi />} />
+          <Route path="/Info" element={<Info />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/SignUp" element={<SignUp />} />
+        </Routes>
+      </RecoilRoot>
+    </NavermapsProvider>
 }
 
 export default App;

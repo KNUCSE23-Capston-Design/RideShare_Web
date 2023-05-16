@@ -9,4 +9,4 @@
 
 <br>
 
-<img src="./src/assets/CommitRule.jpg" width="700" height="600">
+<img src="./src/assets/rule.jpg" width="700" height="600">
