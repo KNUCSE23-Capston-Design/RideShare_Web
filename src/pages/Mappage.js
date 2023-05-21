@@ -1,7 +1,7 @@
 import { NaverMap, Marker, useNavermaps, InfoWindow } from "react-naver-maps";
 import { useState, useEffect } from "react";
 
-const Mappage = () => {
+const Mappage = ({ CarpoolMarkerData, TaxiMarkerData }) => {
     const navermaps = useNavermaps();
     // useRef 대신 useState를 통해 ref를 가져옵니다.
     const [map, setMap] = useState(null);
@@ -52,6 +52,34 @@ const Mappage = () => {
 
     return (
         <NaverMap defaultCenter={new navermaps.LatLng(37.3595704, 127.105399)} defaultZoom={20} defaultMapTypeId={navermaps.MapTypeId.NORMAL} ref={setMap}>
+            {CarpoolMarkerData.map((marker, index) => (
+                <Marker
+                    key={index}
+                    position={{ lat: marker.latitude, lng: marker.longitude }}
+                    title={marker.name}
+                    //마커 이름 로그 찍기
+                    onClick={() => {
+                        console.log(`Clicked on marker: ${marker.name}`);
+                    }}
+                />
+            ))}
+            {TaxiMarkerData.map((marker, index) => (
+                <Marker
+                    key={index}
+                    position={{ lat: marker.latitude, lng: marker.longitude }}
+                    title={marker.name}
+                    //Taxi마커는 빨간색 점으로 표현(일시적) 적당한 마커 아이콘 찾기 필요
+                    icon={{
+                        content: `<div style="width: 20px; height: 20px; background-color: red; border-radius: 50%;"></div>`,
+                        size: new navermaps.Size(20, 20),
+                        anchor: new navermaps.Point(15, 30),
+                    }}
+                    //마커 이름 로그 찍기
+                    onClick={() => {
+                        console.log(`Clicked on marker: ${marker.name}`);
+                    }}
+                />
+            ))}
             <InfoWindow ref={setInfoWindow} />
         </NaverMap>
     );

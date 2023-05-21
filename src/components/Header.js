@@ -1,9 +1,70 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Container as MapDiv } from "react-naver-maps";
+import Mappage from "../pages/Mappage";
+import { useRecoilValue, useResetRecoilState } from "recoil";
+import { carpoolDataState, taxiDataState } from "../atoms";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import styled from "styled-components";
 
-const MainLogo = styled(Logo)`
+const MarkerDataContainer = () => {
+  const carpoolMarkerData = useRecoilValue(carpoolDataState);
+  const taxiMarkerData = useRecoilValue(taxiDataState);
+
+  return (
+    <Mappage CarpoolMarkerData={carpoolMarkerData} TaxiMarkerData={taxiMarkerData} />
+  );
+};
+
+const Header = () => {
+  const resetTaxiMarkerData = useResetRecoilState(taxiDataState); 
+  const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState); 
+
+  const handleHomeClick = () => { //홈 버튼 클릭시
+    resetCarpoolMarkerData(); // 카풀마커데이터 리셋
+    resetTaxiMarkerData(); // 택시마커데이터 리셋
+  };
+  const handleCarpoolClick = () => {
+    resetTaxiMarkerData(); // 카풀 버튼 클릭시 택시마커데이터 리셋
+  };
+  const handleTaxiClick = () => {
+    resetCarpoolMarkerData(); // 택시 버튼 클릭시 카풀마커데이터 리셋
+  };
+  
+  return (
+        <StyledHeader>
+            <Link to="/" onClick={handleHomeClick}>
+                <MainLogo />
+            </Link>
+            <StyledNav>
+                <NavLists>
+                    <NavItem>
+                        <NavLink to="/Info">내 정보</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink to="/Login">로그인</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink to="/SignUp">회원가입</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink to="/carpool" onClick={handleCarpoolClick}>카풀</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink to="/Taxi" onClick={handleTaxiClick}>택시</NavLink>
+                    </NavItem>
+                </NavLists>
+            </StyledNav>
+ <MapDiv style={{ width: "100%", height: "600px", position: "relative" }}>
+        <MarkerDataContainer />
+      </MapDiv>
+        </StyledHeader>
+    );
+};
+
+export default Header;
+  
+  const MainLogo = styled(Logo)`
     width: 140px;
     height: 50px;
     margin-top: 14px;
@@ -40,34 +101,3 @@ const NavLink = styled(Link)`
         color: #0583f2;
     }
 `;
-
-const Header = () => {
-    return (
-        <StyledHeader>
-            <Link to="/">
-                <MainLogo />
-            </Link>
-            <StyledNav>
-                <NavLists>
-                    <NavItem>
-                        <NavLink to="/Info">내 정보</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink to="/Login">로그인</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink to="/SignUp">회원가입</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink to="/carpool">카풀</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink to="/Taxi">택시</NavLink>
-                    </NavItem>
-                </NavLists>
-            </StyledNav>
-        </StyledHeader>
-    );
-};
-
-export default Header;
