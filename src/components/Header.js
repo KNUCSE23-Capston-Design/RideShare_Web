@@ -1,24 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Container as MapDiv } from "react-naver-maps";
-import Mappage from "../pages/Mappage";
-import { useRecoilValue, useResetRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { carpoolDataState, taxiDataState } from "../atoms";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import styled from "styled-components";
 
-const MarkerDataContainer = () => {
-  const carpoolMarkerData = useRecoilValue(carpoolDataState);
-  const taxiMarkerData = useRecoilValue(taxiDataState);
+const TaximarkerData = [
+    { name: "TaxiLocation 1", latitude: 37.8751, longitude: 127.7464 },
+    { name: "TaxiLocation 2", latitude: 37.8635, longitude: 127.7316 },
+    { name: "TaxiLocation 3", latitude: 37.8649, longitude: 127.7411 },
+];
 
-  return (
-    <Mappage CarpoolMarkerData={carpoolMarkerData} TaxiMarkerData={taxiMarkerData} />
-  );
-};
+
+const CarpoolmarkerData = [
+  { name: "CarpoolLocation 1", latitude: 37.8851, longitude: 127.7364 },
+  { name: "CarpoolLocation 2", latitude: 37.8735, longitude: 127.7416 },
+  { name: "CarpoolLocation 3", latitude: 37.8749, longitude: 127.7311 },
+];
+
 
 const Header = () => {
   const resetTaxiMarkerData = useResetRecoilState(taxiDataState); 
-  const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState); 
+  const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState);
+  const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
+  const [taxiData, setTaxiData] = useRecoilState(taxiDataState);
 
   const handleHomeClick = () => { //홈 버튼 클릭시
     resetCarpoolMarkerData(); // 카풀마커데이터 리셋
@@ -26,9 +32,11 @@ const Header = () => {
   };
   const handleCarpoolClick = () => {
     resetTaxiMarkerData(); // 카풀 버튼 클릭시 택시마커데이터 리셋
+    setCarpoolData(CarpoolmarkerData);
   };
   const handleTaxiClick = () => {
     resetCarpoolMarkerData(); // 택시 버튼 클릭시 카풀마커데이터 리셋
+    setTaxiData(TaximarkerData);
   };
   
   return (
@@ -48,16 +56,13 @@ const Header = () => {
                         <NavLink to="/SignUp">회원가입</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink to="/carpool" onClick={handleCarpoolClick}>카풀</NavLink>
+                        <NavLink to="/MapPage" onClick={handleCarpoolClick}>카풀</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink to="/Taxi" onClick={handleTaxiClick}>택시</NavLink>
+                        <NavLink to="/MapPage" onClick={handleTaxiClick}>택시</NavLink>
                     </NavItem>
                 </NavLists>
             </StyledNav>
- <MapDiv style={{ width: "100%", height: "600px", position: "relative" }}>
-        <MarkerDataContainer />
-      </MapDiv>
         </StyledHeader>
     );
 };

@@ -1,7 +1,7 @@
 import { NaverMap, Marker, useNavermaps, InfoWindow } from "react-naver-maps";
 import { useState, useEffect } from "react";
 
-const Mappage = ({ CarpoolMarkerData, TaxiMarkerData }) => {
+const MapComponent = ({ CarpoolMarkerData, TaxiMarkerData }) => {
     const navermaps = useNavermaps();
     // useRef 대신 useState를 통해 ref를 가져옵니다.
     const [map, setMap] = useState(null);
@@ -85,4 +85,4 @@ const Mappage = ({ CarpoolMarkerData, TaxiMarkerData }) => {
     );
 };
 
-export default Mappage;
+export default MapComponent;
