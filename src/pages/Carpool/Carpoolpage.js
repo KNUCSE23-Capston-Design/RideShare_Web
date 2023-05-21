@@ -15,7 +15,7 @@ const Carpool = () => {
     const isMapLoading = useRecoilValue(isMapLoadingState);
 
     return (
-        <MapDiv style={{ width: "100%", height: "600px", position: "relative" }}>
+        <MapDiv style={{ width: "70%", height: "92.4vh", position: "relative" }}>
             <Mappage />
         </MapDiv>
     );
