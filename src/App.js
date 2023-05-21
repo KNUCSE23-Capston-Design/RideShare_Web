@@ -4,8 +4,7 @@ import "./App.css";
 import { RecoilRoot } from "recoil";
 import Header from "./components/Header";
 import Home from "./pages/HomePage";
-import Carpool from "./pages/Carpool/Carpoolpage";
-import Taxi from "./pages/Taxi/Taxipage";
+import MapPage from "./pages/MapPages";
 import Info from "./pages/InfoPage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
@@ -18,8 +17,7 @@ function App() {
                 <Header />
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/Carpool" element={<Carpool />} />
-                    <Route path="/Taxi" element={<Taxi />} />
+                    <Route path="/MapPage" element={<MapPage />} />
                     <Route path="/Info" element={<Info />} />
                     <Route path="/Login" element={<Login />} />
                     <Route path="/SignUp" element={<SignUp />} />
