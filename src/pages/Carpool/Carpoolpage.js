@@ -25,6 +25,9 @@ const Carpool = () => {
 
     return (
         <></>
+//         <MapDiv style={{ width: "70%", height: "92.4vh", position: "relative" }}>
+//             <Mappage />
+//         </MapDiv>
     );
 };
 export default Carpool;
