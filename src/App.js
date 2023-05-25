@@ -4,7 +4,7 @@ import "./App.css";
 import { RecoilRoot } from "recoil";
 import Header from "./components/Header";
 import Home from "./pages/HomePage";
-import MapPage from "./pages/MapPages";
+import MapPage from "./pages/MapPage";
 import Info from "./pages/InfoPage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
