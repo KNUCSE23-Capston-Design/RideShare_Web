@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container as MapDiv } from "react-naver-maps";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { carpoolDataState, taxiDataState } from "../atoms";
+import { carpoolDataState, taxiDataState, isLoggedInState} from "../atoms";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import styled from "styled-components";
 
@@ -23,6 +23,7 @@ const Header = () => {
   const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState);
   const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
   const [taxiData, setTaxiData] = useRecoilState(taxiDataState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [logoMargin, setLogoMargin] = useState("270px");
   const [loginMargin, setLoginMargin] = useState("270px");
 
@@ -61,6 +62,10 @@ const Header = () => {
     setTaxiData(TaximarkerData);
   };
 
+  const handleLogoutClick = () => {
+    setIsLoggedIn(false);
+  };
+
   return (
     <StyledHeader>
       <Link to="/" onClick={handleHomeClick}>
@@ -87,11 +92,19 @@ const Header = () => {
         <NavItem>
           <NavLink to="/Info">내 정보</NavLink>
         </NavItem>
-        <CustomNavItem>
-          <CustomNavLink to="/Login" margin={loginMargin}>
-            로그인
-          </CustomNavLink>
-        </CustomNavItem>
+        {isLoggedIn ? (
+          <CustomNavItem>
+            <CustomNavLink to="/" onClick={handleLogoutClick} margin={loginMargin}>
+              로그아웃
+            </CustomNavLink>
+          </CustomNavItem>
+        ) : (
+          <CustomNavItem>
+            <CustomNavLink to="/Login" margin={loginMargin}>
+              로그인
+            </CustomNavLink>
+          </CustomNavItem>
+        )}
       </NavLists>
     </StyledHeader>
   );

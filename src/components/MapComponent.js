@@ -1,5 +1,8 @@
 import { NaverMap, Marker, useNavermaps, InfoWindow } from "react-naver-maps";
 import { useState, useEffect } from "react";
+import CarMarker from "../assets/icon/CarMarker.png";
+import TaxiMarker from "../assets/icon/TaxiMarker_ver2.png";
+import UserMarker from "../assets/icon/UserMarker.png"
 
 const MapComponent = ({ CarpoolMarkerData, TaxiMarkerData }) => {
     const navermaps = useNavermaps();
@@ -12,9 +15,21 @@ const MapComponent = ({ CarpoolMarkerData, TaxiMarkerData }) => {
 
         const location = new navermaps.LatLng(position.coords.latitude, position.coords.longitude);
         map.setCenter(location);
-        map.setZoom(10);
-        infowindow.setContent('<div style="padding:20px;">' + "geolocation.getCurrentPosition() 위치" + "</div>");
-        infowindow.open(map, location);
+        map.setZoom(16);
+
+        const userMarker = new navermaps.Marker({
+          position: location,
+          map: map,
+          icon: {
+            url: UserMarker,
+            size: new navermaps.Size(15, 15),
+            scaledSize: new navermaps.Size(15, 15),
+            origin: new navermaps.Point(0, 0),
+            anchor: new navermaps.Point(20, 20),
+          },
+        });
+
+        infowindow.close(); 
         console.log("Coordinates: " + location.toString());
     }
 
@@ -36,6 +51,15 @@ const MapComponent = ({ CarpoolMarkerData, TaxiMarkerData }) => {
         }
     }
 
+    function handleMarkerClick(marker) {
+      if (!map) return;
+  
+      const location = new navermaps.LatLng(marker.latitude, marker.longitude);
+      
+      map.setZoom(16);
+      map.panTo(location); //화면 부드럽게 이동
+    }
+
     useEffect(() => {
         if (!map || !infowindow) {
             return;
@@ -51,37 +75,44 @@ const MapComponent = ({ CarpoolMarkerData, TaxiMarkerData }) => {
     }, [map, infowindow]);
 
     return (
-        <NaverMap defaultCenter={new navermaps.LatLng(37.3595704, 127.105399)} defaultZoom={20} defaultMapTypeId={navermaps.MapTypeId.NORMAL} ref={setMap}>
-            {CarpoolMarkerData.map((marker, index) => (
-                <Marker
-                    key={index}
-                    position={{ lat: marker.latitude, lng: marker.longitude }}
-                    title={marker.name}
-                    //마커 이름 로그 찍기
-                    onClick={() => {
-                        console.log(`Clicked on marker: ${marker.name}`);
-                    }}
-                />
-            ))}
-            {TaxiMarkerData.map((marker, index) => (
-                <Marker
-                    key={index}
-                    position={{ lat: marker.latitude, lng: marker.longitude }}
-                    title={marker.name}
-                    //Taxi마커는 빨간색 점으로 표현(일시적) 적당한 마커 아이콘 찾기 필요
-                    icon={{
-                        content: `<div style="width: 20px; height: 20px; background-color: red; border-radius: 50%;"></div>`,
-                        size: new navermaps.Size(20, 20),
-                        anchor: new navermaps.Point(15, 30),
-                    }}
-                    //마커 이름 로그 찍기
-                    onClick={() => {
-                        console.log(`Clicked on marker: ${marker.name}`);
-                    }}
-                />
-            ))}
-            <InfoWindow ref={setInfoWindow} />
-        </NaverMap>
+      <NaverMap
+        defaultCenter={new navermaps.LatLng(36.7115, 128.0134)}
+        defaultZoom={7}
+        defaultMapTypeId={navermaps.MapTypeId.NORMAL}
+        ref={setMap}
+      >
+        {CarpoolMarkerData.map((marker, index) => (
+          <Marker
+            key={index}
+            position={{ lat: marker.latitude, lng: marker.longitude }}
+            title={marker.name}
+            icon={{
+              url: CarMarker,
+              size: new navermaps.Size(45, 45),
+              scaledSize: new navermaps.Size(45, 45),
+              origin: new navermaps.Point(0, 0),
+              anchor: new navermaps.Point(20, 20),
+            }}
+            onClick={() => handleMarkerClick(marker)}
+          />
+        ))}
+        {TaxiMarkerData.map((marker, index) => (
+          <Marker
+            key={index}
+            position={{ lat: marker.latitude, lng: marker.longitude }}
+            title={marker.name}
+            icon={{
+              url: TaxiMarker,
+              size: new navermaps.Size(45, 45),
+              scaledSize: new navermaps.Size(45, 45),
+              origin: new navermaps.Point(0, 0),
+              anchor: new navermaps.Point(20, 20),
+            }}
+            onClick={() => handleMarkerClick(marker)}
+          />
+        ))}
+        <InfoWindow ref={setInfoWindow} />
+      </NaverMap>
     );
 };
 
