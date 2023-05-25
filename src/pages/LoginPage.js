@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../atoms";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
+import styled from "styled-components";
 
 const Login = () => {
   // useState : 아이디와 암호 입력 값을 저장
@@ -9,7 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
- 
+
   const handleLogin = () => {
     //'handleLogin'함수는 "로그인" 버튼을 눌렀을 때 호출됨
     //버튼 클릭시 홈화면으로 이동(일시적)
@@ -28,74 +30,78 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <img
-        src={require("../assets/logo/logo7.png")}
-        style={{ width: 270, height: 60, margin: 5 }}
-        alt="Logo"
-      />
-      <input
-        style={styles.input}
+    <StyledContainer>
+      <Link to="/">
+        <MainLogo />
+      </Link>
+      <Input
         onChange={(e) => setId(e.target.value)}
         value={id}
-        placeholder="id"
+        placeholder="ID"
       />
-      <input
-        style={styles.input}
+      <Input
         onChange={(e) => setPassword(e.target.value)}
         value={password}
-        placeholder="password"
+        placeholder="Password"
         type="password"
       />
-      <button onClick={handleLogin} style={styles.loginButton}>
-        로그인
-      </button>
-      <p style={styles.signupText}>
+      <LoginButton onClick={handleLogin}>로그인</LoginButton>
+      <SignupText>
         RideShare가 처음이신가요?{" "}
-        <span style={styles.signupLink} onClick={handleSignUp}>
-          회원가입
-        </span>
-      </p>
-    </div>
+        <SignupLink onClick={handleSignUp}>회원가입</SignupLink>
+      </SignupText>
+    </StyledContainer>
   );
 };
 
-const styles = {
-  container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#ffffff",
-    paddingTop: "10vh",
-  },
-  input: {
-    height: "40px",
-    width: "80%",
-    borderColor: "gray",
-    borderWidth: "1px",
-    margin: "5px",
-    padding: "10px",
-    backgroundColor: "#ffffff",
-    color: "#D5D7F2",
-    borderRadius: "10px",
-  },
-  loginButton: {
-    width: "80%",
-    backgroundColor: "#9196F2",
-    border: "none",
-    padding: "10px",
-    marginTop: "10px",
-    borderRadius: "10px",
-    color: "#ffffff",
-    fontSize: "16px",
-  },
-  signupText: {
-    marginTop: "20px",
-  },
-  signupLink: {
-    color: "#4541BF",
-    cursor: "pointer",
-  },
-};
+const MainLogo = styled(Logo)`
+  width: 140px;
+  height: 50px;
+  margin-top: 14px;
+`;
+
+const StyledContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #ffffff;
+  padding-top: 10vh;
+`;
+
+const LogoImage = styled.img`
+  width: 270px;
+  height: 60px;
+  margin: 5px;
+`;
+
+const Input = styled.input`
+  height: 40px;
+  width: 250px;
+  border-color: gray;
+  border-width: 1px;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+`;
+
+const LoginButton = styled.button`
+  background-color: #0583f2;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 16px;
+`;
+
+const SignupText = styled.p`
+  margin-top: 20px;
+`;
+
+const SignupLink = styled.span`
+  color: #0583f2;
+  cursor: pointer;
+`;
 
 export default Login;

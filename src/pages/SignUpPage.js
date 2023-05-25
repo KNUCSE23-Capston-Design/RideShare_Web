@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
+import styled from "styled-components";
 
 // TODO : 학교 이메일 인증
 const SignUp = () => {
@@ -22,92 +24,95 @@ const SignUp = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <img
-        src={require("../assets/logo/logo7.png")}
-        style={{ width: 270, height: 60, margin: 5 }}
-        alt="Logo"
-      />
-      <input
-        style={styles.input}
+    <StyledContainer>
+      <Link to="/">
+        <MainLogo />
+      </Link>
+      <Input
         onChange={(e) => setId(e.target.value)}
         value={id}
-        placeholder="id"
+        placeholder="ID"
       />
-      <input
-        style={styles.input}
+      <Input
         onChange={(e) => setPassword(e.target.value)}
         value={password}
-        placeholder="password"
+        placeholder="Password"
         type="password"
       />
-      <input
-        style={styles.input}
+      <Input
         onChange={(e) => setNickname(e.target.value)}
         value={nickname}
-        placeholder="nickname"
+        placeholder="Nickname"
       />
-      <input
-        style={styles.input}
+      <Input
         onChange={(e) => setEmail(e.target.value)}
         value={email}
-        placeholder="email"
+        placeholder="Email"
         type="email"
       />
-      <button onClick={handleSignup} style={styles.signupButton}>
-        <div style={styles.buttonContainer}>
-          <span style={styles.buttonText}>회원가입</span>
-        </div>
-      </button>
-      <p style={styles.loginText}>
+      <SignUpButton onClick={handleSignup}>
+        <ButtonContainer>
+          <ButtonText>회원가입</ButtonText>
+        </ButtonContainer>
+      </SignUpButton>
+      <LoginText>
         이미 계정이 있으신가요?{" "}
-        <span style={styles.loginLink} onClick={handleLogin}>
-          로그인
-        </span>
-      </p>
-    </div>
+        <LoginLink onClick={handleLogin}>로그인</LoginLink>
+      </LoginText>
+    </StyledContainer>
   );
 };
 
-const styles = {
-  container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    height: 40,
-    width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-  },
-  signupButton: {
-    width: "80%",
-    marginTop: 10,
-    backgroundColor: "transparent",
-    border: "none",
-  },
-  buttonContainer: {
-    backgroundColor: "#9196F2",
-    display: "flex",
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-  },
-  loginText: {
-    marginTop: 20,
-  },
-  loginLink: {
-    color: "#4541BF",
-    cursor: "pointer",
-  },
-};
+const StyledContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MainLogo = styled(Logo)`
+  width: 140px;
+  height: 50px;
+  margin-top: 14px;
+`;
+
+const Input = styled.input`
+  height: 40px;
+  width: 250px;
+  border-color: gray;
+  border-width: 1px;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+`;
+
+const SignUpButton = styled.button`
+  background-color: #0583f2;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 16px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ButtonText = styled.span`
+  color: white;
+  font-size: 16px;
+`;
+
+const LoginText = styled.p`
+  margin-top: 20px;
+`;
+
+const LoginLink = styled.span`
+  color: #0583f2;
+  cursor: pointer;
+`;
 
 export default SignUp;
