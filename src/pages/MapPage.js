@@ -53,14 +53,14 @@ const MapPage = () => {
 
     useEffect(() => {
         // getData2(currentType);
-        getData(currentType);
+        // getData(currentType);
     }, [currentType]);
 
     return (
         <MainDiv>
-            <MapDiv style={{ width: "70%", height: "600px", position: "relative" }}>
+            <MapBox>
                 <MarkerDataContainer />
-            </MapDiv>
+            </MapBox>
             <ListComponent />
         </MainDiv>
     );
@@ -69,6 +69,12 @@ const MapPage = () => {
 const MainDiv = styled.div`
     display: flex;
     align-items: center;
+`;
+
+const MapBox = styled(MapDiv)`
+    width: 70%;
+    height: calc(100vh - 87.6px);
+    position: relative;
 `;
 
 export default MapPage;
