@@ -12,6 +12,14 @@ export const showCarpoolState = atom({
     key: "showCarpoolState",
     default: false,
 });
+export const TaxiWritingState = atom({
+    key: "TaxiWritingState",
+    default: false,
+});
+export const CarpoolWritingState = atom({
+    key: "CarpoolWritingState",
+    default: false,
+});
 export const isMapLoadingState = atom({
     key: "isMapLoadingState",
     default: false,

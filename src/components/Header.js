@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container as MapDiv } from "react-naver-maps";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { carpoolDataState, taxiDataState, isLoggedInState} from "../atoms";
+import { showCarpoolState, showTaxiState , carpoolDataState, taxiDataState, isLoggedInState} from "../atoms";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import styled from "styled-components";
 
@@ -21,6 +21,10 @@ const CarpoolmarkerData = [
 const Header = () => {
   const resetTaxiMarkerData = useResetRecoilState(taxiDataState);
   const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState);
+  const resetshowCarpool = useResetRecoilState(showCarpoolState);
+  const resetshowTaxi = useResetRecoilState(showTaxiState);
+  const [showCarpool, setshowCarpool] = useRecoilState(showCarpoolState);
+  const [showTaxi, setshowTaxi] = useRecoilState(showTaxiState);
   const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
   const [taxiData, setTaxiData] = useRecoilState(taxiDataState);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -54,12 +58,16 @@ const Header = () => {
 
   const handleCarpoolClick = () => {
     resetTaxiMarkerData();
+    resetshowTaxi();
     setCarpoolData(CarpoolmarkerData);
+    setshowCarpool(true);
   };
 
   const handleTaxiClick = () => {
     resetCarpoolMarkerData();
+    resetshowCarpool();
     setTaxiData(TaximarkerData);
+    setshowTaxi(true);
   };
 
   const handleLogoutClick = () => {
