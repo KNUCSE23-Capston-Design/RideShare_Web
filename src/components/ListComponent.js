@@ -27,9 +27,19 @@ const tempData = [
 
 const ListComponent = () => {
     return (
-        <Main>
-            <List item={tempData} renderItem={({ item }) => <ListProps key={item.id}></ListProps>} />
-        </Main>
+      <Main>
+        <List
+          width={300}
+          height={400}
+          rowCount={tempData.length}
+          rowHeight={30}
+          rowRenderer={({ index, key, style }) => (
+            <div key={key} style={style}>
+              {tempData[index].text}
+            </div>
+          )}
+        />
+      </Main>
     );
 };
 
