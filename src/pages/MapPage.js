@@ -7,14 +7,10 @@ import ListComponent from "../components/ListComponent";
 import styled from "styled-components";
 import axios from "axios";
 
-const MarkerDataContainer = () => {
+const MapPage = () => {
     const carpoolMarkerData = useRecoilValue(carpoolDataState);
     const taxiMarkerData = useRecoilValue(taxiDataState);
 
-    return <MapComponent CarpoolMarkerData={carpoolMarkerData} TaxiMarkerData={taxiMarkerData} />;
-};
-
-const MapPage = () => {
     const client = axios.create({
         withCredentials: true,
     });
@@ -26,7 +22,7 @@ const MapPage = () => {
 
     async function getData(type) {
         try {
-            const response = await client.get(`http://192.168.0.107:8080/parties`, {
+            const response = await client.get(`http://localhost:8080/parties`, {
                 params: {
                     lastId: 35,
                     amount: 3,
@@ -43,7 +39,7 @@ const MapPage = () => {
 
     const getData2 = async (type) => {
         try {
-            const response = await client.get(`http://192.168.0.107:8080/parties/40`);
+            const response = await client.get(`http://localhost:8080/parties/40`);
             setItems(response.data);
             console.log(response.data);
         } catch (error) {
@@ -59,7 +55,7 @@ const MapPage = () => {
     return (
         <MainDiv>
             <MapBox>
-                <MarkerDataContainer />
+            <MapComponent CarpoolMarkerData={carpoolMarkerData} TaxiMarkerData={taxiMarkerData} />;
             </MapBox>
             <ListComponent />
         </MainDiv>
