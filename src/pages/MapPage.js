@@ -25,13 +25,13 @@ const MapPage = () => {
             const response = await client.get(`http://localhost:8080/parties`, {
                 params: {
                     lastId: 35,
-                    amount: 3,
+                    amount: 10,
                     type: "카풀",
                     keyword: "",
                 },
             });
             setItems(response.data);
-            console.log(items);
+            console.log(response.data);
         } catch (error) {
             console.log(error);
         }
@@ -50,7 +50,7 @@ const MapPage = () => {
     useEffect(() => {
         // getData2(currentType);
         // getData(currentType);
-    }, [currentType]);
+    }, []);
 
     return (
         <MainDiv>
