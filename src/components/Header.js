@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container as MapDiv } from "react-naver-maps";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { showCarpoolState, showTaxiState , carpoolDataState, taxiDataState, isLoggedInState} from "../atoms";
+import { showCarpoolState, showTaxiState, carpoolDataState, taxiDataState, isLoggedInState } from "../atoms";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import styled from "styled-components";
 import axios from "axios";
@@ -77,10 +77,11 @@ const Header = () => {
       }
     };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    const handleCarpoolClick = () => {
+        resetTaxiMarkerData();
+        resetshowTaxi();
+        setCarpoolData(CarpoolmarkerData);
+        setshowCarpool(true);
     };
   }, [setCarpoolData, setTaxiData]);
 
@@ -154,74 +155,74 @@ const Header = () => {
 export default Header;
 
 const MainLogo = styled(Logo)`
-  width: 140px;
-  height: 50px;
-  margin-top: 14px;
-  margin-left: ${(props) => props.margin};
-  transition: all 0.5s ease;
+    width: 140px;
+    height: 50px;
+    margin-top: 14px;
+    margin-left: ${(props) => props.margin};
+    transition: all 0.5s ease;
 `;
 
 const StyledHeader = styled.header`
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  font-family: "Noto Sans KR", sans-serif;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    font-family: "Noto Sans KR", sans-serif;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 18px;
 `;
 
 const StyledNav = styled.nav`
-  display: flex;
-  align-items: center;
-  margin-right: auto;
-  margin-left: auto;
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+    margin-left: auto;
 `;
 
 const NavLists = styled.ul`
-  list-style: none;
-  display: flex;
-  align-items: center;
+    list-style: none;
+    display: flex;
+    align-items: center;
 `;
 
 const NavGroup = styled.div`
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 `;
 
 const NavItem = styled.li`
-  list-style: none;
-  margin-right: 10px;
-  margin-left: 10px;
+    list-style: none;
+    margin-right: 10px;
+    margin-left: 10px;
 `;
 
 const NavLink = styled(Link)`
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-  transition: all 0.5s ease;
-  :hover {
-    color: #0583f2;
-  }
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    transition: all 0.5s ease;
+    :hover {
+        color: #0583f2;
+    }
 `;
 
 const Divider = styled.div`
-  width: 1px;
-  height: 12px;
-  background-color: #ccc;
-  margin: 0 10px;
+    width: 1px;
+    height: 12px;
+    background-color: #ccc;
+    margin: 0 10px;
 `;
 
 const CustomNavItem = styled.li`
-  margin-left: 30px;
+    margin-left: 30px;
 `;
 
 const CustomNavLink = styled(Link)`
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-  transition: all 0.5s ease;
-  margin-right: ${(props) => props.margin};
-  :hover {
-    color: #0583f2;
-  }
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    transition: all 0.5s ease;
+    margin-right: ${(props) => props.margin};
+    :hover {
+        color: #0583f2;
+    }
 `;
