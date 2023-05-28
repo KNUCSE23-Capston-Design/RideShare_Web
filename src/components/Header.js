@@ -8,148 +8,141 @@ import styled from "styled-components";
 import axios from "axios";
 
 const Header = () => {
-  const resetTaxiMarkerData = useResetRecoilState(taxiDataState);
-  const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState);
-  const resetshowCarpool = useResetRecoilState(showCarpoolState);
-  const resetshowTaxi = useResetRecoilState(showTaxiState);
-  const [showCarpool, setshowCarpool] = useRecoilState(showCarpoolState);
-  const [showTaxi, setshowTaxi] = useRecoilState(showTaxiState);
-  const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
-  const [taxiData, setTaxiData] = useRecoilState(taxiDataState);
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-  const [logoMargin, setLogoMargin] = useState("270px");
-  const [loginMargin, setLoginMargin] = useState("270px");
+    const resetTaxiMarkerData = useResetRecoilState(taxiDataState);
+    const resetCarpoolMarkerData = useResetRecoilState(carpoolDataState);
+    const resetshowCarpool = useResetRecoilState(showCarpoolState);
+    const resetshowTaxi = useResetRecoilState(showTaxiState);
+    const [showCarpool, setshowCarpool] = useRecoilState(showCarpoolState);
+    const [showTaxi, setshowTaxi] = useRecoilState(showTaxiState);
+    const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
+    const [taxiData, setTaxiData] = useRecoilState(taxiDataState);
+    const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+    const [logoMargin, setLogoMargin] = useState("270px");
+    const [loginMargin, setLoginMargin] = useState("270px");
 
-  const fetchCarpoolData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/parties`, {
-            params: {
-                amount: 15,
-                type: "카풀",
-                keyword: "",
-            },
-        });
-      const data = response.data;
-      const markerData = data.map((item) => ({
-        name: item.pid,
-        latitude: parseFloat(item.startLat),
-        longitude: parseFloat(item.startLng),
-      }));
-      setCarpoolData(markerData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+    const fetchCarpoolData = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/parties`, {
+                params: {
+                    amount: 15,
+                    type: "카풀",
+                    keyword: "",
+                },
+            });
+            const data = response.data;
+            const markerData = data.map((item) => ({
+                name: item.pid,
+                latitude: parseFloat(item.startLat),
+                longitude: parseFloat(item.startLng),
+            }));
+            setCarpoolData(markerData);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
-  const fetchTaxiData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/parties`, {
-            params: {
-                amount: 20,
-                type: "택시",
-                keyword: "",
-            },
-        });
-      const data = response.data;
-      const markerData = data.map((item) => ({
-        name: item.pid,
-        latitude: parseFloat(item.startLat),
-        longitude: parseFloat(item.startLng),
-      }));
-      setTaxiData(markerData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+    const fetchTaxiData = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/parties`, {
+                params: {
+                    amount: 20,
+                    type: "택시",
+                    keyword: "",
+                },
+            });
+            const data = response.data;
+            const markerData = data.map((item) => ({
+                name: item.pid,
+                latitude: parseFloat(item.startLat),
+                longitude: parseFloat(item.startLng),
+            }));
+            setTaxiData(markerData);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
-  //브라우저의 크기 변화시 로고와 로그인 자연스럽게 변화
-  useEffect(() => {
-    fetchCarpoolData();
-    fetchTaxiData();
-    const handleResize = () => {
-      const windowWidth = window.innerWidth;
-      if (windowWidth <= 1500) {
-        setLogoMargin("30px");
-        setLoginMargin("30px");
-      } else {
-        setLogoMargin("270px");
-        setLoginMargin("270px");
-      }
+    //브라우저의 크기 변화시 로고와 로그인 자연스럽게 변화
+    useEffect(() => {
+        fetchCarpoolData();
+        fetchTaxiData();
+        const handleResize = () => {
+            const windowWidth = window.innerWidth;
+            if (windowWidth <= 1500) {
+                setLogoMargin("30px");
+                setLoginMargin("30px");
+            } else {
+                setLogoMargin("270px");
+                setLoginMargin("270px");
+            }
+        };
+    }, [setCarpoolData, setTaxiData]);
+
+    const handleHomeClick = () => {
+        resetCarpoolMarkerData();
+        resetTaxiMarkerData();
     };
 
     const handleCarpoolClick = () => {
         resetTaxiMarkerData();
         resetshowTaxi();
-        setCarpoolData(CarpoolmarkerData);
+        fetchCarpoolData();
         setshowCarpool(true);
     };
-  }, [setCarpoolData, setTaxiData]);
 
-  const handleHomeClick = () => {
-    resetCarpoolMarkerData();
-    resetTaxiMarkerData();
-  };
+    const handleTaxiClick = () => {
+        resetCarpoolMarkerData();
+        resetshowCarpool();
+        fetchTaxiData();
+        setshowTaxi(true);
+    };
 
-  const handleCarpoolClick = () => {
-    resetTaxiMarkerData();
-    resetshowTaxi();
-    fetchCarpoolData();
-    setshowCarpool(true);
-  };
+    const handleLogoutClick = () => {
+        setIsLoggedIn(false);
+    };
 
-  const handleTaxiClick = () => {
-    resetCarpoolMarkerData();
-    resetshowCarpool();
-    fetchTaxiData();
-    setshowTaxi(true);
-  };
-
-  const handleLogoutClick = () => {
-    setIsLoggedIn(false);
-  };
-
-  return (
-    <StyledHeader>
-      <Link to="/" onClick={handleHomeClick}>
-        <MainLogo margin={logoMargin} />
-      </Link>
-      <StyledNav>
-        <NavLists>
-          <NavGroup>
-            <NavItem>
-              <NavLink to="/MapPage" onClick={handleCarpoolClick}>
-                카풀
-              </NavLink>
-            </NavItem>
-            <Divider />
-            <NavItem>
-              <NavLink to="/MapPage" onClick={handleTaxiClick}>
-                택시
-              </NavLink>
-            </NavItem>
-          </NavGroup>
-        </NavLists>
-      </StyledNav>
-      <NavLists>
-        <NavItem>
-          <NavLink to="/Info">내 정보</NavLink>
-        </NavItem>
-        {isLoggedIn ? (
-          <CustomNavItem>
-            <CustomNavLink to="/" onClick={handleLogoutClick} margin={loginMargin}>
-              로그아웃
-            </CustomNavLink>
-          </CustomNavItem>
-        ) : (
-          <CustomNavItem>
-            <CustomNavLink to="/Login" margin={loginMargin}>
-              로그인
-            </CustomNavLink>
-          </CustomNavItem>
-        )}
-      </NavLists>
-    </StyledHeader>
-  );
+    return (
+        <StyledHeader>
+            <Link to="/" onClick={handleHomeClick}>
+                <MainLogo margin={logoMargin} />
+            </Link>
+            <StyledNav>
+                <NavLists>
+                    <NavGroup>
+                        <NavItem>
+                            <NavLink to="/MapPage" onClick={handleCarpoolClick}>
+                                카풀
+                            </NavLink>
+                        </NavItem>
+                        <Divider />
+                        <NavItem>
+                            <NavLink to="/MapPage" onClick={handleTaxiClick}>
+                                택시
+                            </NavLink>
+                        </NavItem>
+                    </NavGroup>
+                </NavLists>
+            </StyledNav>
+            <NavLists>
+                <NavItem>
+                    <NavLink to="/Info">내 정보</NavLink>
+                </NavItem>
+                {isLoggedIn ? (
+                    <CustomNavItem>
+                        <CustomNavLink to="/" onClick={handleLogoutClick} margin={loginMargin}>
+                            로그아웃
+                        </CustomNavLink>
+                    </CustomNavItem>
+                ) : (
+                    <CustomNavItem>
+                        <CustomNavLink to="/Login" margin={loginMargin}>
+                            로그인
+                        </CustomNavLink>
+                    </CustomNavItem>
+                )}
+            </NavLists>
+        </StyledHeader>
+    );
 };
 
 export default Header;
