@@ -31,12 +31,11 @@ const ListComponent = () => {
         });
 
         const data = await response.data;
-        console.log(carpoolItems[0]);
+        console.log(data);
 
         setCarpoolItems((prev) => prev.concat(data));
         carpoolId -= 2;
-        // setItems((prev) => prev.concat(data));
-        console.log(carpoolId, "카풀");
+        // console.log(carpoolId, "카풀");
     };
 
     const taxiFetchData = async () => {
@@ -53,23 +52,8 @@ const ListComponent = () => {
 
         setTaxiItems((prev) => prev.concat(data));
         taxiId -= 2;
-        // setItems((prev) => prev.concat(data));
         console.log(taxiId, "택시");
     };
-
-    useEffect(() => {
-        isCarpoolshow ? carpoolFetchData() : taxiFetchData();
-    }, []);
-
-    // 새로고침 시 state 초기화
-    // useEffect(() => {
-    //     if (window.location.reload) {
-    //         setCarpoolItems([]);
-    //         setTexiItems([]);
-    //         carpoolCurrentId = 41;
-    //         taxiCurrentId = 21;
-    //     }
-    // }, [window.location.reload]);
 
     useEffect(() => {
         let observer;
@@ -81,7 +65,7 @@ const ListComponent = () => {
                     if (carpoolId < 23) {
                         return () => observer && observer.disconnect();
                     }
-                    await (isCarpoolshow ? carpoolFetchData() : taxiFetchData());
+                    await carpoolFetchData();
                     observer.observe(entry.target);
                     setTempId(carpoolId);
                 }
@@ -102,7 +86,7 @@ const ListComponent = () => {
                         // setTempId1(taxiId);
                         return () => observer && observer.disconnect();
                     }
-                    await (isCarpoolshow ? carpoolFetchData() : taxiFetchData());
+                    await taxiFetchData();
                     observer.observe(entry.target);
                     setTempId1(taxiId);
                 }
@@ -119,25 +103,41 @@ const ListComponent = () => {
                 <div>
                     {carpoolItems.map((item, id) => {
                         return (
-                            <div key={id}>
+                            <ListItem key={id}>
                                 <div>{item.pid}</div>
-                                <div>{item.startPoint}</div>
-                            </div>
+                                <ItemInfo>
+                                    <div>출발지 : {item.startPoint}</div>
+                                    <div>목적지 : {item.endPoint}</div>
+                                    <div>
+                                        출발 시간 : {item.startDate} {item.startTime}
+                                    </div>
+                                </ItemInfo>
+                                <CurrentMember>{item.currentHeadcnt}명</CurrentMember>
+                                <JoinButton>Join</JoinButton>
+                            </ListItem>
                         );
                     })}
-                    <div ref={setTarget}>this is the target</div>
+                    <div ref={setTarget}>----</div>
                 </div>
             ) : (
                 <div>
                     {taxiItems.map((item, id) => {
                         return (
-                            <div key={id}>
+                            <ListItem key={id}>
                                 <div>{item.pid}</div>
-                                <div>{item.startPoint}</div>
-                            </div>
+                                <ItemInfo>
+                                    <div>출발지 : {item.startPoint}</div>
+                                    <div>목적지 : {item.endPoint}</div>
+                                    <div>
+                                        출발 시간 : {item.startDate} {item.startTime}
+                                    </div>
+                                </ItemInfo>
+                                <CurrentMember>{item.currentHeadcnt}명</CurrentMember>
+                                <JoinButton>Join</JoinButton>
+                            </ListItem>
                         );
                     })}
-                    <div ref={setTarget1}>this is the target</div>
+                    <div ref={setTarget1}>----</div>
                 </div>
             )}
 
@@ -153,4 +153,29 @@ const Main = styled.div`
     width: 30%;
     height: calc(100vh - 87.6px);
     overflow-y: scroll;
+    font-family: "Noto Sans KR", sans-serif;
+    font-weight: 100;
+`;
+
+const ListItem = styled.div`
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid black;
+    border-radius: 10px;
+`;
+
+const ItemInfo = styled.div`
+    margin: 10px;
+    width: 250px;
+`;
+
+const CurrentMember = styled.div`
+    margin-right: 10px;
+`;
+
+const JoinButton = styled.button`
+    marign-right: 20px;
 `;
