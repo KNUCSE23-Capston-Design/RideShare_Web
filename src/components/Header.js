@@ -76,6 +76,11 @@ const Header = () => {
                 setLoginMargin("270px");
             }
         };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
     }, [setCarpoolData, setTaxiData]);
 
     const handleHomeClick = () => {
