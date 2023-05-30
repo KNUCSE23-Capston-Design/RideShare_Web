@@ -15,13 +15,37 @@ const ListComponent = () => {
     const [tempId, setTempId] = useState(0);
     const [tempId1, setTempId1] = useState(0);
 
-    let carpoolId = 41;
+    let carpoolId = -1;
     if (tempId !== 0) carpoolId = tempId;
-    let taxiId = 21;
+    let taxiId = -1;
     if (tempId1 !== 0) taxiId = tempId1;
 
+    //useEffect에 의해 observer와 묶여서 매번 호출되는 문제 개선 필요
+    const getInitialData = async () => {
+        const responseC = await axios.get(`http://localhost:8080/parties`, {
+            params: {
+                amount: 1,
+                type: "카풀",
+            },
+        });
+
+        const responseT = await axios.get(`http://localhost:8080/parties`, {
+            params: {
+                amount: 1,
+                type: "택시",
+            },
+        });
+
+        console.log(responseC);
+
+        if (carpoolId === -1) carpoolId = responseC.data[0].pid + 1;
+        // carpoolId = responseC.data[0].pid;
+        // taxiId = responseT.data[0].pid;
+        if (taxiId === -1) taxiId = responseT.data[0].pid + 1;
+    };
+
     const carpoolFetchData = async () => {
-        const response = await axios.get(`http://192.168.0.107:8080/parties`, {
+        const response = await axios.get(`http://localhost:8080/parties`, {
             params: {
                 lastId: carpoolId,
                 amount: 2,
@@ -34,12 +58,12 @@ const ListComponent = () => {
         console.log(data);
 
         setCarpoolItems((prev) => prev.concat(data));
-        carpoolId -= 2;
+        carpoolId = data[data.length - 1].pid;
         // console.log(carpoolId, "카풀");
     };
 
     const taxiFetchData = async () => {
-        const response = await axios.get(`http://192.168.0.107:8080/parties`, {
+        const response = await axios.get(`http://localhost:8080/parties`, {
             params: {
                 lastId: taxiId,
                 amount: 2,
@@ -49,22 +73,29 @@ const ListComponent = () => {
         });
 
         const data = await response.data;
+        console.log(data[data.length - 1]);
 
         setTaxiItems((prev) => prev.concat(data));
-        taxiId -= 2;
+        taxiId = data[data.length - 1].pid;
         console.log(taxiId, "택시");
     };
 
     useEffect(() => {
         let observer;
+
+        // if (tempId === 0) {
+        //     carpoolId = getInitialData();
+        // }
+
         if (target && isCarpoolshow) {
             const onIntersect = async ([entry], observer) => {
                 if (entry.isIntersecting) {
                     observer.unobserve(entry.target);
                     // carpoolId < 23
-                    if (carpoolId < 23) {
+                    if (carpoolId < 22 && carpoolId !== -1) {
                         return () => observer && observer.disconnect();
                     }
+                    await getInitialData();
                     await carpoolFetchData();
                     observer.observe(entry.target);
                     setTempId(carpoolId);
@@ -78,14 +109,21 @@ const ListComponent = () => {
 
     useEffect(() => {
         let observer1;
+
+        // if (tempId1 === 0) {
+        //     getInitialData();
+        // }
+
         if (target1 && !isCarpoolshow) {
             const onIntersect = async ([entry], observer) => {
                 if (entry.isIntersecting) {
                     observer.unobserve(entry.target);
-                    if (taxiId < 2) {
+                    if (taxiId < 2 && taxiId !== -1) {
                         // setTempId1(taxiId);
                         return () => observer && observer.disconnect();
                     }
+
+                    await getInitialData();
                     await taxiFetchData();
                     observer.observe(entry.target);
                     setTempId1(taxiId);
