@@ -38,34 +38,59 @@ const CarpoolWritingComponent = () => {
     const handleRegister = async () => {
         // 등록 클릭시 서버로 내용을 보내야함
 
+        // try {
+        //     const response = await fetch("http://localhost:8080/parties", {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({
+        //             type: "카풀",
+        //             startPoint: "글로벌경영관11",
+        //             startLat: "37.87120749003905",
+        //             startLng: "127.7431938775162",
+        //             endPoint: "남춘천역",
+        //             totalHeadcnt: 4,
+        //             startDate: "2023-04-19",
+        //             startTime: "오후 09:10",
+        //             carNumber: "98가7654",
+        //             content: "카풀내용수정테스트asdfgh",
+        //         }),
+        //     });
+
+        //     if (response.ok) {
+        //         // Registration successful
+        //     } else {
+        //         // Registration failed
+        //         console.log("Registration failed. Please try again.");
+        //     }
+        // } catch (error) {
+        //     console.log("An error occurred:", error);
+        // }
+
         try {
-            const response = await fetch("http://localhost:8080/parties", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    type: "카풀",
-                    startPoint: "글로벌경영관11",
-                    startLat: "37.87120749003905",
-                    startLng: "127.7431938775162",
-                    endPoint: "남춘천역",
-                    totalHeadcnt: 4,
-                    startDate: "2023-04-19",
-                    startTime: "오후 09:10",
-                    carNumber: "98가7654",
-                    content: "카풀내용수정테스트asdfgh",
-                }),
+            const response = await axios.post("http://localhost:8080/parties", {
+                type: "카풀",
+                startPoint: carpoolData.startPoint,
+                startLat: "37.86845655465745",
+                startLng: "127.73665776796231",
+                endPoint: carpoolData.endPoint,
+                totalHeadcnt: carpoolData.totalHead,
+                startDate: carpoolData.startDate,
+                startTime: carpoolData.startTime,
+                carNumber: "98가7654",
+                content: "",
             });
 
-            if (response.ok) {
-                // Registration successful
+            if (response.status >= 200 && response.status < 300) {
+                // POST request was successful
+                console.log("POST request was successful");
             } else {
-                // Registration failed
-                console.log("Registration failed. Please try again.");
+                // POST request was not successful
+                console.log("POST request failed");
             }
         } catch (error) {
-            console.log("An error occurred:", error);
+            console.log(error);
         }
     };
 
