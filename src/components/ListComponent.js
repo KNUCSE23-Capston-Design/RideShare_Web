@@ -141,8 +141,8 @@ const ListComponent = () => {
                 <div>
                     {carpoolItems.map((item, id) => {
                         return (
-                            <ListItem key={id}>
-                                <div>{item.pid}</div>
+                            <ListCarItem key={id}>
+                                <ListCarID>{item.pid}</ListCarID>
                                 <ItemInfo>
                                     <div>출발지 : {item.startPoint}</div>
                                     <div>목적지 : {item.endPoint}</div>
@@ -151,8 +151,8 @@ const ListComponent = () => {
                                     </div>
                                 </ItemInfo>
                                 <CurrentMember>{item.currentHeadcnt}명</CurrentMember>
-                                <JoinButton>Join</JoinButton>
-                            </ListItem>
+                                <JoinButton>참여</JoinButton>
+                            </ListCarItem>
                         );
                     })}
                     <div ref={setTarget}>----</div>
@@ -161,8 +161,8 @@ const ListComponent = () => {
                 <div>
                     {taxiItems.map((item, id) => {
                         return (
-                            <ListItem key={id}>
-                                <div>{item.pid}</div>
+                            <ListTaxiItem key={id}>
+                                <ListTaxiID>{item.pid}</ListTaxiID>
                                 <ItemInfo>
                                     <div>출발지 : {item.startPoint}</div>
                                     <div>목적지 : {item.endPoint}</div>
@@ -171,8 +171,8 @@ const ListComponent = () => {
                                     </div>
                                 </ItemInfo>
                                 <CurrentMember>{item.currentHeadcnt}명</CurrentMember>
-                                <JoinButton>Join</JoinButton>
-                            </ListItem>
+                                <JoinButton>참여</JoinButton>
+                            </ListTaxiItem>
                         );
                     })}
                     <div ref={setTarget1}>----</div>
@@ -195,25 +195,87 @@ const Main = styled.div`
     font-weight: 100;
 `;
 
-const ListItem = styled.div`
+const ListCarItem = styled.div`
     margin: 10px;
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #a7d1f7;
     border: 1px solid black;
     border-radius: 10px;
 `;
 
+const ListTaxiItem = styled.div`
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f8f5bf;
+    border: 1px solid black;
+    border-radius: 10px;
+`;
+
+const ListCarID = styled.div`
+  font-weight: bold;
+  background-color: #0583f2;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 30px 20px;
+  width: 30px;
+  text-align: center;
+`;
+
+const ListTaxiID = styled.div`
+  font-weight: bold;
+  background-color: yellow;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 30px 20px;
+  width: 30px;
+  text-align: center;
+`;
+
 const ItemInfo = styled.div`
     margin: 10px;
-    width: 250px;
+    width: 240px;
+    font-weight: bold;
+
+    @media (max-width: 1150px) {    //브라우저 크기 조절시 사라짐
+        display: none;
+      }
 `;
 
 const CurrentMember = styled.div`
     margin-right: 10px;
+    font-weight: bold;
+
+    @media (max-width: 600px) {     //브라우저 크기 조절시 사라짐
+        display: none;
+      }
 `;
 
 const JoinButton = styled.button`
-    marign-right: 20px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px 10px;
+  text-align: center;
+  margin-right: 20px;
+  font-weight: bold;
+  cursor: pointer; //마우스 포인터 변화
+
+  transition: background-color 0.3s;
+
+  &:hover {     //버튼 클릭 효과
+    background-color: #7F7F7F; 
+  }
+
+  &:active {    //버튼 클릭 효과
+    background-color: #5C5C5C;
+  }
+
+  @media (max-width: 780px) {       //브라우저 크기 조절시 사라짐
+    display: none;
+  }
 `;
