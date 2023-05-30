@@ -25,6 +25,7 @@ const MapPage = () => {
 const MainDiv = styled.div`
     display: flex;
     align-items: center;
+    background-color: #F4F8FE;
 `;
 
 const MapBox = styled(MapDiv)`
