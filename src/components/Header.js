@@ -165,8 +165,8 @@ const StyledHeader = styled.header`
     justify-content: space-between;
     margin: 0;
     font-family: "Noto Sans KR", sans-serif;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 18px;
+    // border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
 `;
 
 const StyledNav = styled.nav`
