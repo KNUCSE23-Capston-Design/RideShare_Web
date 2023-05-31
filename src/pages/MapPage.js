@@ -5,12 +5,10 @@ import { carpoolDataState, taxiDataState, showCarpoolState, showTaxiState } from
 import { useRecoilValue } from "recoil";
 import ListComponent from "../components/ListComponent";
 import styled from "styled-components";
-import axios from "axios";
 
 const MapPage = () => {
     const carpoolMarkerData = useRecoilValue(carpoolDataState);
     const taxiMarkerData = useRecoilValue(taxiDataState);
-    const isCarpoolshow = useRecoilValue(showCarpoolState);
 
     return (
         <MainDiv>
@@ -28,7 +26,7 @@ const MainDiv = styled.div`
 `;
 
 const MapBox = styled(MapDiv)`
-    width: 70%;
+    width: 67%;
     height: calc(100vh - 87.6px);
     position: relative;
 `;

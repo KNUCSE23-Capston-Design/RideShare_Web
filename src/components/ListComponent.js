@@ -136,6 +136,7 @@ const ListComponent = () => {
     }, [target1, isCarpoolshow]);
 
     return (
+        // 각 listItem의 id는 코드 동작을 확인하기 위해 임시로 넣은 것이다.
         <Main>
             {isCarpoolshow ? (
                 <div>
@@ -150,12 +151,14 @@ const ListComponent = () => {
                                         출발 시간 : {item.startDate} {item.startTime}
                                     </div>
                                 </ItemInfo>
-                                <CurrentMember>{item.currentHeadcnt}명</CurrentMember>
-                                <JoinButton>참여</JoinButton>
+                                <CurrentMember>
+                                    {item.currentHeadcnt}/{item.totalHeadcnt} 명
+                                </CurrentMember>
+                                <CparpoolJoinButton>참여</CparpoolJoinButton>
                             </ListCarItem>
                         );
                     })}
-                    <div ref={setTarget}>----</div>
+                    <div ref={setTarget}>.</div>
                 </div>
             ) : (
                 <div>
@@ -188,7 +191,7 @@ export default ListComponent;
 
 // observer가 인식하는 뷰포트의 최대 크기는 100vh이다 그러나 화면에 맞추기 위해서는 threshold 값을 조정해야 한다.
 const Main = styled.div`
-    width: 30%;
+    width: 33%;
     height: calc(100vh - 87.6px);
     overflow-y: scroll;
     font-family: "Noto Sans KR", sans-serif;
@@ -201,9 +204,11 @@ const ListCarItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #a7d1f7;
-    border: 1px solid black;
-    border-radius: 10px;
+    // background-color: #eff3ff;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+    // border: 2px solid #0583f2;
+    // border-radius: 10px;
 `;
 
 const ListTaxiItem = styled.div`
@@ -218,23 +223,24 @@ const ListTaxiItem = styled.div`
 `;
 
 const ListCarID = styled.div`
-  font-weight: bold;
-  background-color: #0583f2;
-  border-radius: 10px;
-  font-size: 20px;
-  padding: 30px 20px;
-  width: 30px;
-  text-align: center;
+    font-weight: bold;
+    // background-color: #b8d7fb;
+    border: 2px solid #0583f2;
+    border-radius: 10px;
+    font-size: 20px;
+    padding: 20px 20px;
+    width: 25px;
+    text-align: center;
 `;
 
 const ListTaxiID = styled.div`
-  font-weight: bold;
-  background-color: yellow;
-  border-radius: 10px;
-  font-size: 20px;
-  padding: 30px 20px;
-  width: 30px;
-  text-align: center;
+    font-weight: bold;
+    background-color: yellow;
+    border-radius: 10px;
+    font-size: 20px;
+    padding: 30px 20px;
+    width: 30px;
+    text-align: center;
 `;
 
 const ItemInfo = styled.div`
@@ -242,40 +248,72 @@ const ItemInfo = styled.div`
     width: 240px;
     font-weight: bold;
 
-    @media (max-width: 1150px) {    //브라우저 크기 조절시 사라짐
+    @media (max-width: 1150px) {
+        //브라우저 크기 조절시 사라짐
         display: none;
-      }
+    }
 `;
 
 const CurrentMember = styled.div`
     margin-right: 10px;
     font-weight: bold;
 
-    @media (max-width: 600px) {     //브라우저 크기 조절시 사라짐
+    @media (max-width: 600px) {
+        //브라우저 크기 조절시 사라짐
         display: none;
-      }
+    }
 `;
 
 const JoinButton = styled.button`
-  background-color: white;
-  border-radius: 10px;
-  padding: 10px 10px;
-  text-align: center;
-  margin-right: 20px;
-  font-weight: bold;
-  cursor: pointer; //마우스 포인터 변화
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px 10px;
+    text-align: center;
+    margin-right: 18px;
+    font-weight: bold;
+    cursor: pointer; //마우스 포인터 변화
 
-  transition: background-color 0.3s;
+    transition: background-color 0.3s;
 
-  &:hover {     //버튼 클릭 효과
-    background-color: #7F7F7F; 
-  }
+    &:hover {
+        //버튼 클릭 효과
+        background-color: #7f7f7f;
+    }
 
-  &:active {    //버튼 클릭 효과
-    background-color: #5C5C5C;
-  }
+    &:active {
+        //버튼 클릭 효과
+        background-color: #5c5c5c;
+    }
 
-  @media (max-width: 780px) {       //브라우저 크기 조절시 사라짐
-    display: none;
-  }
+    @media (max-width: 780px) {
+        //브라우저 크기 조절시 사라짐
+        display: none;
+    }
+`;
+
+const CparpoolJoinButton = styled.button`
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px 10px;
+    text-align: center;
+    margin-right: 18px;
+    font-weight: bold;
+    cursor: pointer; //마우스 포인터 변화
+
+    transition: background-color 0.3s;
+
+    &:hover {
+        //버튼 클릭 효과
+        background-color: #35a0ff;
+    }
+
+    &:active {
+        //버튼 클릭 효과
+        background-color: #5c5c5c;
+    }
+
+    @media (max-width: 780px) {
+        //브라우저 크기 조절시 사라짐
+        display: none;
+    }
 `;
