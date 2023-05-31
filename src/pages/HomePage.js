@@ -24,13 +24,13 @@ const Home = () => {
 export default Home;
 
 const MainDiv = styled.div`
-    background-image: linear-gradient(to bottom, white, #f4f9ff);
     position: relative;
     width: 100%;
     height: calc(100vh - 78.6px);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #F4F8FE;
 `;
 
 const PhraseWrapper = styled.div`
@@ -39,7 +39,12 @@ const PhraseWrapper = styled.div`
     justify-content: flex-start;
     margin-left: 14vw;
     margin-bottom: 60vh;
+    width: 45vw;
     z-index: 1;
+
+    @media (max-width: 800px) {       //브라우저 크기 조절시 사라짐
+        display: none;
+      }
 `;
 
 const DestinationInput = styled.input`
@@ -49,6 +54,11 @@ const DestinationInput = styled.input`
     margin-bottom: 50vh;
     border-radius: 15px;
     border: 2px solid #0583f2;
+    z-index: 1;
+
+    @media (max-width: 800px) {       //브라우저 크기 조절시 사라짐
+        display: none;
+      }
 `;
 
 const MainPhrase = styled.h1`
@@ -60,4 +70,10 @@ const MainImg = styled(CarpoolImg)`
     position: absolute;
     width: 45vw;
     margin-left: 100px;
+
+    @media (max-width: 780px) {       //브라우저 크기 조절시 페이지 가득채움
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
 `;
