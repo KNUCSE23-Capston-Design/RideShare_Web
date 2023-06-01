@@ -173,7 +173,9 @@ const ListComponent = () => {
                                         출발 시간 : {item.startDate} {item.startTime}
                                     </div>
                                 </ItemInfo>
-                                <CurrentMember>{item.currentHeadcnt}명</CurrentMember>
+                                <CurrentMember>
+                                    {item.currentHeadcnt}/{item.totalHeadcnt} 명
+                                </CurrentMember>
                                 <JoinButton>참여</JoinButton>
                             </ListTaxiItem>
                         );
@@ -217,9 +219,11 @@ const ListTaxiItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #f8f5bf;
-    border: 1px solid black;
-    border-radius: 10px;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+    //background-color: #f8f5bf;
+    //border: 1px solid black;
+    //border-radius: 10px;
 `;
 
 const ListCarID = styled.div`
@@ -235,11 +239,12 @@ const ListCarID = styled.div`
 
 const ListTaxiID = styled.div`
     font-weight: bold;
-    background-color: yellow;
+    //background-color: yellow;
+    border: 2px solid #E3D700;
     border-radius: 10px;
     font-size: 20px;
-    padding: 30px 20px;
-    width: 30px;
+    padding: 20px 20px;
+    width: 25px;
     text-align: center;
 `;
 
@@ -277,7 +282,7 @@ const JoinButton = styled.button`
 
     &:hover {
         //버튼 클릭 효과
-        background-color: #7f7f7f;
+        background-color: #35a0ff;
     }
 
     &:active {
