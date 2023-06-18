@@ -12,16 +12,33 @@ const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    //'handleLogin'함수는 "로그인" 버튼을 눌렀을 때 호출됨
-    //버튼 클릭시 홈화면으로 이동(일시적)
-    navigate("/");
+  const handleLogin = async () => {
+    try {
+      // 로그인 자격 증명을 확인하기 위해 서버에 API 요청
+      const response = await fetch("http://localhost:8080/members/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          pw: password,
+        }),
+      });
 
-    //로그인 성공시, 로그인 상태 저장
-    setIsLoggedIn(true);
-
-    //ID 및 암호 확인 로직 작성 필요
-    //로그인에 성공하면 navigation.navigate()를 사용하여 다음 화면으로 이동
+      if (response.ok) {
+        // 로그인 성공
+        const data = await response.json();
+        setIsLoggedIn(true);
+        navigate("/");
+        console.log("Login seccess");
+      } else {
+        // 로그인 실패
+        console.log("Login failed");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+    }
   };
 
   const handleSignUp = () => {

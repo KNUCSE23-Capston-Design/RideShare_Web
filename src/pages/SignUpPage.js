@@ -12,10 +12,31 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const handleSignup = () => {
-    // 사용자 데이터를 데이터베이스 또는 API에 저장하기 위한 로직 작성
-    // 등록이 완료되면 로그인 화면으로 이동
-    navigate("/Login");
+  const handleSignup = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/members/join", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          pw: password,
+          nickname,
+          email,
+        }),
+      });
+
+      if (response.ok) {
+        // 회원가입 성공
+        navigate("/Login");
+      } else {
+        // 회원가입 실패
+        console.log("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.log("An error occurred:", error);
+    }
   };
 
   const handleLogin = () => {
