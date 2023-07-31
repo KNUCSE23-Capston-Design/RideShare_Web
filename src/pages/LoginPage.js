@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
+import { setRefreshToken } from "../Cookies";
+import { accessTokenState } from "../atoms";
 import { isLoggedInState } from "../atoms";
 import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
@@ -9,8 +11,18 @@ const Login = () => {
   // useState : 아이디와 암호 입력 값을 저장
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  // AccessToekn State
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
+
+  // 암걸려서 만든 엔터키 이벤트 감지
+  const handleOnkeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
 
   const handleLogin = async () => {
     try {
@@ -29,6 +41,14 @@ const Login = () => {
       if (response.ok) {
         // 로그인 성공
         const data = await response.json();
+        // 서버에서 발행한 토큰
+        const { accessToken, refreshToken } = data;
+
+        setAccessToken(accessToken);
+        console.log(accessToken);
+        setRefreshToken(refreshToken);
+        console.log(refreshToken);
+
         setIsLoggedIn(true);
         navigate("/");
         console.log("Login seccess");
@@ -58,6 +78,7 @@ const Login = () => {
       />
       <Input
         onChange={(e) => setPassword(e.target.value)}
+        onKeyDown={handleOnkeyDown}
         value={password}
         placeholder="Password"
         type="password"
