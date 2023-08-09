@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { setRefreshToken } from "../Cookies";
-import { accessTokenState } from "../atoms";
 import { isLoggedInState } from "../atoms";
 import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
@@ -11,9 +10,6 @@ const Login = () => {
   // useState : 아이디와 암호 입력 값을 저장
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  // AccessToekn State
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
 
@@ -44,7 +40,7 @@ const Login = () => {
         // 서버에서 발행한 토큰
         const { accessToken, refreshToken } = data;
 
-        setAccessToken(accessToken);
+        sessionStorage.setItem("accessToken", accessToken);
         console.log(accessToken);
         setRefreshToken(refreshToken);
         console.log(refreshToken);
