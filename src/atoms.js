@@ -5,12 +5,6 @@ export const isLoggedInState = atom({
   default: false,
 });
 
-// 엑세스 토큰 atom 생성
-export const accessTokenState = atom({
-  key: "accessTokenState",
-  default: null,
-});
-
 export const showTaxiState = atom({
   key: "showTaxiState",
   default: false,
