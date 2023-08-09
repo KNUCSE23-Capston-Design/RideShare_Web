@@ -75,7 +75,7 @@ const Header = () => {
   // 중요!!!!!! : 유효한 토큰인지 체크할 수 있는 방법을 찾기
   const checkLogin = () => {
     // console.log(token);
-    if (token === null) {
+    if (!token) {
       setIsLoggedIn(false);
     } else {
       setIsLoggedIn(true);
