@@ -24,6 +24,10 @@ const MapPage = () => {
     }
   }, []);
 
+  if (!accessToken) {
+    return null;
+  }
+
   return (
     <MainDiv>
       <MapBox>

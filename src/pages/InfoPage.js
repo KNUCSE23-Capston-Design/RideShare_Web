@@ -16,9 +16,9 @@ const Info = () => {
   useEffect(() => {
     if (!accessToken) {
       navigate("/Login");
+    } else {
+      fetchUserInfo();
     }
-
-    fetchUserInfo();
   }, []);
 
   const handleLogout = () => {
@@ -37,6 +37,10 @@ const Info = () => {
       console.error("Failed to fetch user information:", error);
     }
   };
+
+  if (!accessToken) {
+    return null;
+  }
 
   return (
     <StyledContainer>
