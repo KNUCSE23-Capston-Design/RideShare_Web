@@ -30,10 +30,14 @@ customAPI.interceptors.response.use(
 
     // 리프레쉬 토큰이 비정상일 시
     if (err.response && err.response.data.status === 401) {
-      try {
-        const refreshToken = getCookieToken();
-        const accessToken = sessionStorage.getItem("accessToken");
+      const refreshToken = getCookieToken();
+      const accessToken = sessionStorage.getItem("accessToken");
 
+      if (!refreshToken) {
+        return Promise.reject(err);
+      }
+
+      try {
         console.log(refreshToken, accessToken);
 
         // // 새로운 axios 인스턴스 생성
