@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useRecoilValue, useResetRecoilState } from "recoil";
-import { TaxiWritingState, accessTokenState } from "../atoms";
-import axios from "axios";
+import { TaxiWritingState } from "../atoms";
+import { customAPI } from "../customAPI";
 
 const TaxiWritingComponent = () => {
   const resetTaxiWriting = useResetRecoilState(TaxiWritingState);
-  const accessToken = useRecoilValue(accessTokenState);
   const [showPostcode, setShowPostcode] = useState(false);
 
   const [taxiData, setTaxiData] = useState({
@@ -33,7 +32,7 @@ const TaxiWritingComponent = () => {
 
           // 카카오 맵 API를 사용하여 주소의 위도 및 경도를 가져옵니다
           try {
-            const response = await axios.get(
+            const response = await customAPI.get(
               "https://dapi.kakao.com/v2/local/search/address.json",
               {
                 params: {
@@ -86,24 +85,16 @@ const TaxiWritingComponent = () => {
   const handleRegister = async () => {
     // 등록 클릭시 서버로 내용을 보내야함
     try {
-      const response = await axios.post(
-        "http://localhost:8080/parties",
-        {
-          type: "택시",
-          startPoint: taxiData.startPoint,
-          startLat: taxiData.startLat,
-          startLng: taxiData.startLng,
-          endPoint: taxiData.endPoint,
-          totalHeadcnt: taxiData.totalHead,
-          startDate: taxiData.startDate,
-          startTime: taxiData.startTime,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await customAPI.post("http://localhost:8080/parties", {
+        type: "택시",
+        startPoint: taxiData.startPoint,
+        startLat: taxiData.startLat,
+        startLng: taxiData.startLng,
+        endPoint: taxiData.endPoint,
+        totalHeadcnt: taxiData.totalHead,
+        startDate: taxiData.startDate,
+        startTime: taxiData.startTime,
+      });
 
       if (response.status >= 200 && response.status < 300) {
         // POST request was successful

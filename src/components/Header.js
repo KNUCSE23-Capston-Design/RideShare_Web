@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container as MapDiv } from "react-naver-maps";
 import { useRecoilState, useResetRecoilState, useRecoilValue } from "recoil";
 import {
@@ -11,10 +11,8 @@ import {
 } from "../atoms";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import { removeCookieToken, getCookieToken } from "../Cookies";
-import { accessTokenState } from "../atoms";
 import styled from "styled-components";
-import axios from "axios";
-import { setRefreshToken } from "../Cookies";
+import { customAPI } from "../customAPI";
 
 const Header = () => {
   const resetTaxiMarkerData = useResetRecoilState(taxiDataState);
@@ -28,42 +26,16 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [logoMargin, setLogoMargin] = useState("270px");
   const [loginMargin, setLoginMargin] = useState("270px");
-
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const token = getCookieToken();
-
-  const grantAccessToken = async () => {
-    console.log(token);
-    try {
-      const response = await axios.post(
-        `http://localhost:8080/members/reissue`,
-        {
-          accessToken: accessToken,
-          refreshToken: token,
-        }
-      );
-      const data = response.data;
-      const { accessToken: newAccessToken, refreshToken } = data;
-
-      setAccessToken(newAccessToken);
-      console.log("재발급" + accessToken);
-      setRefreshToken(refreshToken);
-      console.log("재발급" + refreshToken);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  const navigate = useNavigate();
 
   const fetchCarpoolData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/parties`, {
+      const response = await customAPI.get(`http://localhost:8080/parties`, {
         params: {
           amount: 15,
           type: "카풀",
           keyword: "",
-        },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
         },
       });
       const data = response.data;
@@ -80,14 +52,11 @@ const Header = () => {
 
   const fetchTaxiData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/parties`, {
+      const response = await customAPI.get(`http://localhost:8080/parties`, {
         params: {
           amount: 20,
           type: "택시",
           keyword: "",
-        },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
         },
       });
       const data = response.data;
@@ -103,14 +72,13 @@ const Header = () => {
   };
 
   // f5을 실행시키게 되면 store 자체가 초기화가 되기 때문에 쿠키의 존재유무를 통해 로그인 상태를 유지한다.
+  // 중요!!!!!! : 유효한 토큰인지 체크할 수 있는 방법을 찾기
   const checkLogin = () => {
-    if (token) {
-      setIsLoggedIn(true);
-      if (!accessToken) {
-        grantAccessToken();
-      }
-    } else {
+    // console.log(token);
+    if (token === null) {
       setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
     }
   };
 
@@ -153,11 +121,14 @@ const Header = () => {
     resetshowCarpool();
     fetchTaxiData();
     setshowTaxi(true);
+    navigate("/MapPage");
   };
 
   const handleLogoutClick = () => {
     removeCookieToken();
+    sessionStorage.removeItem("accessToken");
     setIsLoggedIn(false);
+    navigate("/");
   };
 
   return (

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRecoilValue, useResetRecoilState } from "recoil";
-import { CarpoolWritingState, accessTokenState } from "../atoms";
-import axios from "axios";
+import { CarpoolWritingState } from "../atoms";
+import { customAPI } from "../customAPI";
 
 const CarpoolWritingComponent = () => {
   const resetCarpoolWriting = useResetRecoilState(CarpoolWritingState);
-  const accessToken = useRecoilValue(accessTokenState);
   const [showPostcode, setShowPostcode] = useState(false);
 
   const [carpoolData, setCarpoolData] = useState({
@@ -35,7 +34,7 @@ const CarpoolWritingComponent = () => {
 
           // 카카오 맵 API를 사용하여 주소의 위도 및 경도를 가져옵니다
           try {
-            const response = await axios.get(
+            const response = await customAPI.get(
               "https://dapi.kakao.com/v2/local/search/address.json",
               {
                 params: {
@@ -130,26 +129,18 @@ const CarpoolWritingComponent = () => {
     // }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/parties",
-        {
-          type: "카풀",
-          startPoint: carpoolData.startPoint,
-          startLat: carpoolData.startLat,
-          startLng: carpoolData.startLng,
-          endPoint: carpoolData.endPoint,
-          totalHeadcnt: carpoolData.totalHeadcnt,
-          startDate: carpoolData.startDate,
-          startTime: carpoolData.startTime,
-          carNumber: "98ga7654",
-          content: "",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await customAPI.post("http://localhost:8080/parties", {
+        type: "카풀",
+        startPoint: carpoolData.startPoint,
+        startLat: carpoolData.startLat,
+        startLng: carpoolData.startLng,
+        endPoint: carpoolData.endPoint,
+        totalHeadcnt: carpoolData.totalHeadcnt,
+        startDate: carpoolData.startDate,
+        startTime: carpoolData.startTime,
+        carNumber: "98ga7654",
+        content: "",
+      });
 
       if (response.status >= 200 && response.status < 300) {
         // POST request was successful

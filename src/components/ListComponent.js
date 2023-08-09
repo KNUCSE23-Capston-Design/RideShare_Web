@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { showCarpoolState, showTaxiState } from "../atoms";
 import { useRecoilValue } from "recoil";
-import { accessTokenState } from "../atoms";
 import "intersection-observer";
-import axios from "axios";
+import { customAPI } from "../customAPI";
 
 // problem : 스크롤 바를 체크하는 target1, target이 서로 연동됨
 const ListComponent = () => {
@@ -16,8 +15,6 @@ const ListComponent = () => {
   const [tempId, setTempId] = useState(0);
   const [tempId1, setTempId1] = useState(0);
 
-  const accessToken = useRecoilValue(accessTokenState);
-
   let carpoolId = -1;
   if (tempId !== 0) carpoolId = tempId;
   let taxiId = -1;
@@ -25,27 +22,21 @@ const ListComponent = () => {
 
   //useEffect에 의해 observer와 묶여서 매번 호출되는 문제 개선 필요
   const getInitialData = async () => {
-    const responseC = await axios.get(`http://localhost:8080/parties`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const responseC = await customAPI.get(`http://localhost:8080/parties`, {
       params: {
         amount: 1,
         type: "카풀",
       },
     });
 
-    const responseT = await axios.get(`http://localhost:8080/parties`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const responseT = await customAPI.get(`http://localhost:8080/parties`, {
       params: {
         amount: 1,
         type: "택시",
       },
     });
 
-    console.log(responseC);
+    // console.log(responseC);
 
     if (carpoolId === -1) carpoolId = responseC.data[0].pid + 1;
     // carpoolId = responseC.data[0].pid;
@@ -54,10 +45,7 @@ const ListComponent = () => {
   };
 
   const carpoolFetchData = async () => {
-    const response = await axios.get(`http://localhost:8080/parties`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const response = await customAPI.get(`http://localhost:8080/parties`, {
       params: {
         lastId: carpoolId,
         amount: 2,
@@ -67,7 +55,7 @@ const ListComponent = () => {
     });
 
     const data = await response.data;
-    console.log(data);
+    // console.log(data);
 
     setCarpoolItems((prev) => prev.concat(data));
     carpoolId = data[data.length - 1].pid;
@@ -75,10 +63,7 @@ const ListComponent = () => {
   };
 
   const taxiFetchData = async () => {
-    const response = await axios.get(`http://localhost:8080/parties`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const response = await customAPI.get(`http://localhost:8080/parties`, {
       params: {
         lastId: taxiId,
         amount: 2,
@@ -88,11 +73,11 @@ const ListComponent = () => {
     });
 
     const data = await response.data;
-    console.log(data[data.length - 1]);
+    // console.log(data[data.length - 1]);
 
     setTaxiItems((prev) => prev.concat(data));
     taxiId = data[data.length - 1].pid;
-    console.log(taxiId, "택시");
+    // console.log(taxiId, "택시");
   };
 
   useEffect(() => {
