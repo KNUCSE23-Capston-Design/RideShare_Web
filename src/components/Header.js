@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container as MapDiv } from "react-naver-maps";
-import { useRecoilState, useResetRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import {
   showCarpoolState,
   showTaxiState,
@@ -26,77 +25,37 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [logoMargin, setLogoMargin] = useState("270px");
   const [loginMargin, setLoginMargin] = useState("270px");
-  const token = getCookieToken();
+  const refreshToken = getCookieToken();
+  const accessToken = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
-
-  const fetchCarpoolData = async () => {
-    try {
-      const response = await customAPI.get(`http://localhost:8080/parties`, {
-        params: {
-          amount: 15,
-          type: "카풀",
-          keyword: "",
-        },
-      });
-      const data = response.data;
-      const markerData = data.map((item) => ({
-        name: item.pid,
-        latitude: parseFloat(item.startLat),
-        longitude: parseFloat(item.startLng),
-      }));
-      setCarpoolData(markerData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const fetchTaxiData = async () => {
-    try {
-      const response = await customAPI.get(`http://localhost:8080/parties`, {
-        params: {
-          amount: 20,
-          type: "택시",
-          keyword: "",
-        },
-      });
-      const data = response.data;
-      const markerData = data.map((item) => ({
-        name: item.pid,
-        latitude: parseFloat(item.startLat),
-        longitude: parseFloat(item.startLng),
-      }));
-      setTaxiData(markerData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   // f5을 실행시키게 되면 store 자체가 초기화가 되기 때문에 쿠키의 존재유무를 통해 로그인 상태를 유지한다.
   // 중요!!!!!! : 유효한 토큰인지 체크할 수 있는 방법을 찾기
   const checkLogin = () => {
     // console.log(token);
-    if (!token) {
+    if (!accessToken) {
       setIsLoggedIn(false);
     } else {
       setIsLoggedIn(true);
     }
   };
 
+  const handleResize = () => {
+    const windowWidth = window.innerWidth;
+    if (windowWidth <= 1500) {
+      setLogoMargin("30px");
+      setLoginMargin("30px");
+    } else {
+      setLogoMargin("270px");
+      setLoginMargin("270px");
+    }
+  };
+
   //브라우저의 크기 변화시 로고와 로그인 자연스럽게 변화
   useEffect(() => {
     checkLogin();
-    fetchCarpoolData();
-    fetchTaxiData();
-    const handleResize = () => {
-      const windowWidth = window.innerWidth;
-      if (windowWidth <= 1500) {
-        setLogoMargin("30px");
-        setLoginMargin("30px");
-      } else {
-        setLogoMargin("270px");
-        setLoginMargin("270px");
-      }
-    };
+    // fetchCarpoolData();
+    // fetchTaxiData();
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
@@ -112,16 +71,15 @@ const Header = () => {
   const handleCarpoolClick = () => {
     resetTaxiMarkerData();
     resetshowTaxi();
-    fetchCarpoolData();
+    // fetchCarpoolData();
     setshowCarpool(true);
   };
 
   const handleTaxiClick = () => {
     resetCarpoolMarkerData();
     resetshowCarpool();
-    fetchTaxiData();
+    // fetchTaxiData();
     setshowTaxi(true);
-    navigate("/MapPage");
   };
 
   const handleLogoutClick = () => {
