@@ -1,19 +1,21 @@
-import React, { Component } from "react";
-import { Switch, Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import { RecoilRoot } from "recoil";
 import Header from "./components/Header";
 import Home from "./pages/HomePage";
 import MapPage from "./pages/MapPage";
-import Info from "./pages/InfoPage";
-import InfoManage from "./pages/InfoManagePage";
+import Info from "./pages/mypage/InfoPage";
+import InfoManage from "./pages/mypage/InfoManagePage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
 import { NavermapsProvider } from "react-naver-maps";
 
 function App() {
+  const clientId = process.env.REACT_APP_NAVER_CLIENT_ID;
+
   return (
-    <NavermapsProvider ncpClientId="9mq5hlqrjf">
+    <NavermapsProvider ncpClientId={clientId}>
       <RecoilRoot>
         <Header />
         <Routes>
