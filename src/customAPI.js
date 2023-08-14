@@ -63,7 +63,7 @@ customAPI.interceptors.response.use(
           return customAPI(originalConfig);
         }
       } catch (err) {
-        console.log("토큰 갱신 error: " + err.response.data.meg);
+        console.log("토큰 갱신 error: " + err.response.data.message);
         // const t = getCookieToken();
         // const a = sessionStorage.getItem("accessToken");
         // console.log(a);
@@ -73,7 +73,8 @@ customAPI.interceptors.response.use(
           err.response.data.message ===
             "로그아웃된 사용자입니다. Refresh Token이 존재하지 않습니다." ||
           err.response.data.message ===
-            "Refresh Token이 일치하지 않거나 만료되었습니다."
+            "Refresh Token이 일치하지 않거나 만료되었습니다." ||
+          err.response.data.message === "Access Token이 만료되었습니다."
         ) {
           window.location.href = "http://localhost:3000/login";
         }
