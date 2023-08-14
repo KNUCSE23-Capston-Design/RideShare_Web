@@ -1,4 +1,10 @@
-import { atom, selector } from "recoil";
+import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist({
+  key: "recoil-persist",
+  storage: sessionStorage,
+});
 
 export const isLoggedInState = atom({
   key: "isLoggedInState",
@@ -8,10 +14,12 @@ export const isLoggedInState = atom({
 export const showTaxiState = atom({
   key: "showTaxiState",
   default: false,
+  effects_UNSTABLE: [persistAtom],
 });
 export const showCarpoolState = atom({
   key: "showCarpoolState",
   default: false,
+  effects_UNSTABLE: [persistAtom],
 });
 export const TaxiWritingState = atom({
   key: "TaxiWritingState",
