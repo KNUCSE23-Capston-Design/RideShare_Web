@@ -40,9 +40,6 @@ const CarpoolWritingComponent = () => {
                 params: {
                   query: data.address,
                 },
-                headers: {
-                  Authorization: `KakaoAK 6e7fd9a12cb7bd6083457dad4ad937e2`, //api 키
-                },
               }
             );
 
