@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { TaxiWritingState } from "../atoms";
 import { customAPI } from "../customAPI";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TaxiWritingComponent = () => {
   const resetTaxiWriting = useResetRecoilState(TaxiWritingState);
@@ -18,6 +20,13 @@ const TaxiWritingComponent = () => {
     startDate: "",
     startTime: "",
   });
+
+  const showPopupMessage = () => {
+    toast.success("등록 되었습니다.", {
+      autoClose: 1000, // 자동 닫힘 지속 시간을 1초로 설정
+      onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+    });
+  };
 
   const handlePostcode = async (whatpoint) => {
     new window.daum.Postcode({
@@ -96,6 +105,7 @@ const TaxiWritingComponent = () => {
       if (response.status >= 200 && response.status < 300) {
         // POST request was successful
         console.log("POST request was successful");
+        showPopupMessage();
       } else {
         // POST request was not successful
         console.log("POST request failed");
@@ -168,6 +178,7 @@ const TaxiWritingComponent = () => {
           <CloseButton onClick={handleClose}>취소</CloseButton>
         </ButtonContainer>
       </Container>
+      <ToastContainer />
     </>
   );
 };
