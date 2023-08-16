@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 const Info = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [userInfo, setUserInfo] = useState({ id: "", pw: "", nickname: "" });
+  const [changeNic, setChangeNic] = useState(false);
+  const [nickname, setNickname] = useState("");
   const navigate = useNavigate();
   const accessToken = sessionStorage.getItem("accessToken");
 
@@ -35,6 +37,30 @@ const Info = () => {
       setUserInfo({ id: data.id, pw: data.pw, nickname: data.nickname });
     } catch (error) {
       console.error("Failed to fetch user information:", error);
+    }
+  };
+
+  // DB 전체의 닉네임들과 중복 비교를 해야하나?
+  const onClickChangeNicButton = () => {
+    setChangeNic(true);
+  };
+
+  const changeNicname = async () => {
+    if (userInfo.nickname === nickname) {
+      // 해당 기능은 렌더링 또는 알람형식으로 사용자가 인식할 수 있게 변경.
+      console.log("기존 닉네임과 동일합니다.");
+    } else {
+      try {
+        const data = await customAPI.put(`/members/nickname`, {
+          nickname: nickname,
+        });
+
+        if (data.status === 200) {
+          console.log("sucessfully updated nickname");
+        }
+      } catch (error) {
+        console.log("faild to update nickname:", error);
+      }
     }
   };
 
@@ -94,8 +120,25 @@ const Info = () => {
                 <SellText>별명</SellText>
               </StyledTitleCell>
               <StyledCell>
-                <StyledTextWithMargin>{userInfo.nickname}</StyledTextWithMargin>
-                <StyledButton>닉네임 변경</StyledButton>
+                {changeNic ? (
+                  <>
+                    <input
+                      onChange={(e) => setNickname(e.target.value)}
+                      value={nickname}
+                      placeholder="Nickname"
+                    ></input>
+                    <button onClick={changeNicname}>입력</button>
+                  </>
+                ) : (
+                  <>
+                    <StyledTextWithMargin>
+                      {userInfo.nickname}
+                    </StyledTextWithMargin>
+                    <StyledButton onClick={onClickChangeNicButton}>
+                      닉네임 변경
+                    </StyledButton>
+                  </>
+                )}
               </StyledCell>
             </StyledRow>
           </StyledTable>
