@@ -9,6 +9,9 @@ import { customAPI } from "../../customAPI";
 const InfoManage = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [userInfo, setUserInfo] = useState({ id: "", pw: "", nickname: "" });
+  const [isPwChangeButtonClicked, setisPwChangeButtonClicked] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [pw, setPw] = useState("");
 
   useEffect(() => {
     // Fetch user information using the access token when the component mounts
@@ -27,6 +30,39 @@ const InfoManage = () => {
       setUserInfo({ id: data.id, pw: data.pw, nickname: data.nickname });
     } catch (error) {
       console.error("Failed to fetch user information:", error);
+    }
+  };
+
+  const onClickChangePwButton = () => {
+    setisPwChangeButtonClicked(true);
+  };
+
+  const changePassword = async () => {
+    // 서버의 중복 체크 또는 기존 비밀번호가 암호화되어 있기 때문에 확인 불가능. 서버에서 처리하는 것이 나을것.
+    // 필요 기능 : 비밀번호 중복체크
+    // if (userInfo.pw === newPassword) {
+    //   // 해당 기능은 렌더링 또는 알람형식으로 사용자가 인식할 수 있게 변경.
+    //   console.log("기존 비밀번호과 동일합니다.");
+    //   return;
+    // }
+    // if (userInfo.pw !== pw) {
+    //   // 해당 기능은 렌더링 또는 알람형식으로 사용자가 인식할 수 있게 변경.
+    //   console.log("기존 비밀번호가 틀립니다.");
+    //   console.log(userInfo.pw, pw);
+    //   return;
+    // }
+
+    try {
+      const data = await customAPI.put(`/members/password`, {
+        oldPassword: pw,
+        newPassword: newPassword,
+      });
+
+      if (data.status === 200) {
+        console.log("sucessfully updated password");
+      }
+    } catch (error) {
+      console.log("faild to update password:", error);
     }
   };
 
@@ -63,7 +99,6 @@ const InfoManage = () => {
               </StyledTitleCell>
               <StyledCell>
                 <SellText>{userInfo.id}</SellText>
-                <StyledButton>아이디 변경</StyledButton>
               </StyledCell>
             </StyledRow>
             <StyledRow>
@@ -71,8 +106,27 @@ const InfoManage = () => {
                 <SellText>비밀번호</SellText>
               </StyledTitleCell>
               <StyledCell>
-                <StyledTextWithMargin>예시</StyledTextWithMargin>
-                <StyledButton>비밀번호 변경</StyledButton>
+                {!isPwChangeButtonClicked ? (
+                  <StyledButton onClick={onClickChangePwButton}>
+                    비밀번호 변경
+                  </StyledButton>
+                ) : (
+                  <>
+                    <input
+                      onChange={(e) => setPw(e.target.value)}
+                      value={pw}
+                      placeholder="기존 비밀번호"
+                      type="password"
+                    />
+                    <input
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      value={newPassword}
+                      placeholder="새로운 비밀번호"
+                      type="password"
+                    />
+                    <button onClick={changePassword}>입력</button>
+                  </>
+                )}
               </StyledCell>
             </StyledRow>
           </StyledTable>
