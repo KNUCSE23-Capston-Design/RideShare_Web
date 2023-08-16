@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { CarpoolWritingState } from "../atoms";
 import { customAPI } from "../customAPI";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CarpoolWritingComponent = () => {
   const resetCarpoolWriting = useResetRecoilState(CarpoolWritingState);
@@ -20,6 +22,13 @@ const CarpoolWritingComponent = () => {
     carNumber: "98가7654",
     content: "",
   });
+
+  const showPopupMessage = () => {
+    toast.success("등록 되었습니다.", {
+      autoClose: 1000, // 자동 닫힘 지속 시간을 1초로 설정
+      onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+    });
+  };
 
   const handlePostcode = async (whatpoint) => {
     new window.daum.Postcode({
@@ -39,9 +48,6 @@ const CarpoolWritingComponent = () => {
               {
                 params: {
                   query: data.address,
-                },
-                headers: {
-                  Authorization: `KakaoAK 6e7fd9a12cb7bd6083457dad4ad937e2`, //api 키
                 },
               }
             );
@@ -84,50 +90,7 @@ const CarpoolWritingComponent = () => {
     resetCarpoolWriting();
   };
 
-  // type: "카풀",
-  //             startPoint: carpoolData.startPoint,
-  //             startLat: "37.86845655465745",
-  //             startLng: "127.73665776796231",
-  //             endPoint: carpoolData.endPoint,
-  //             totalHeadcnt: carpoolData.totalHead,
-  //             startDate: carpoolData.startDate,
-  //             startTime: carpoolData.startTime,
-  //             carNumber: "98가7654",
-  //             content: "",
-
   const handleRegister = async () => {
-    // 등록 클릭시 서버로 내용을 보내야함
-
-    // try {
-    //     const response = await fetch("http://localhost:8080/parties", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //             type: "카풀",
-    //             startPoint: "글로벌경영관11",
-    //             startLat: "37.87120749003905",
-    //             startLng: "127.7431938775162",
-    //             endPoint: "남춘천역",
-    //             totalHeadcnt: 4,
-    //             startDate: "2023-04-19",
-    //             startTime: "오후 09:10",
-    //             carNumber: "98가7654",
-    //             content: "카풀내용수정테스트asdfgh",
-    //         }),
-    //     });
-
-    //     if (response.ok) {
-    //         // Registration successful
-    //     } else {
-    //         // Registration failed
-    //         console.log("Registration failed. Please try again.");
-    //     }
-    // } catch (error) {
-    //     console.log("An error occurred:", error);
-    // }
-
     try {
       const response = await customAPI.post("http://localhost:8080/parties", {
         type: "카풀",
@@ -145,6 +108,7 @@ const CarpoolWritingComponent = () => {
       if (response.status >= 200 && response.status < 300) {
         // POST request was successful
         console.log("POST request was successful");
+        showPopupMessage();
       } else {
         // POST request was not successful
         console.log("POST request failed");
@@ -232,6 +196,7 @@ const CarpoolWritingComponent = () => {
           <CloseButton onClick={handleClose}>취소</CloseButton>
         </ButtonContainer>
       </Container>
+      <ToastContainer />
     </>
   );
 };

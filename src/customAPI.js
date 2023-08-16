@@ -17,6 +17,11 @@ customAPI.interceptors.request.use(function (config) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
+  // Kakao API에 대한 요청인지 확인합니다
+  if (config.url.includes("dapi.kakao.com")) {
+    config.headers.Authorization = `KakaoAK 6e7fd9a12cb7bd6083457dad4ad937e2`; // Replace YOUR_KAKAO_API_KEY with your actual Kakao API key
+  }
+
   return config; // 수정된 설정(config) 반환
 });
 
