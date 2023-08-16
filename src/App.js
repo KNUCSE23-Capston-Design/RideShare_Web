@@ -9,6 +9,7 @@ import Info from "./pages/mypage/InfoPage";
 import InfoManage from "./pages/mypage/InfoManagePage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
+import MyParty from "./pages/mypage/MyParty";
 import { NavermapsProvider } from "react-naver-maps";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/MapPage" element={<MapPage />} />
           <Route path="/Info" element={<Info />} />
           <Route path="/Info/Manage" element={<InfoManage />} />
+          <Route path="/Info/MyParty" element={<MyParty />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
         </Routes>
