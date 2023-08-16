@@ -84,7 +84,9 @@ const Info = () => {
             </Link>
           </StyledText>
           <StyledText>
-            <strong>작성 글</strong>
+            <Link to="/Info/MyParty">
+              <strong>작성 글</strong>
+            </Link>
           </StyledText>
           <StyledText>
             <strong>Share 후기</strong>
