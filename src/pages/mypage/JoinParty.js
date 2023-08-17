@@ -3,14 +3,14 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { customAPI } from "../../customAPI";
 
-const MyParty = () => {
+const JoinParty = () => {
   const [carpoolData, setCarpoolData] = useState([]);
   const [taxiData, setTaxiData] = useState([]);
 
   const getMyParty = async () => {
     console.log("get my party");
     try {
-      const response = await customAPI.get(`/members/notice-list/`, {});
+      const response = await customAPI.get(`/members/participation-list/`, {});
 
       const myList = response.data;
       myList.map((item) => {
@@ -59,7 +59,7 @@ const MyParty = () => {
         </div>
       </LeftSection>
       <RightSection>
-        <StyledHeading>작성 글</StyledHeading>
+        <StyledHeading>참여 파티</StyledHeading>
         <CenteredContent>
           <StyledTable>
             {carpoolData.length !== 0 ? (
@@ -210,4 +210,4 @@ const StyledTextWithMargin = styled.p`
   margin-left: 20px;
 `;
 
-export default MyParty;
+export default JoinParty;

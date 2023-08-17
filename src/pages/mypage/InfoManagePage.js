@@ -63,6 +63,9 @@ const InfoManage = () => {
       }
     } catch (error) {
       console.log("faild to update password:", error);
+      if (error.response.status === 400) {
+        console.log("기존 비밀번호와 동일합니다.");
+      }
     }
   };
 
@@ -87,7 +90,9 @@ const InfoManage = () => {
             </Link>
           </StyledText>
           <StyledText>
-            <strong>Share 후기</strong>
+            <Link to="/Info/JoinParty">
+              <strong>Share 후기</strong>
+            </Link>
           </StyledText>
         </div>
       </LeftSection>

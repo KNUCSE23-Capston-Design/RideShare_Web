@@ -89,7 +89,9 @@ const Info = () => {
             </Link>
           </StyledText>
           <StyledText>
-            <strong>Share 후기</strong>
+            <Link to="/Info/JoinParty">
+              <strong>Share 후기</strong>
+            </Link>
           </StyledText>
         </div>
       </LeftSection>
