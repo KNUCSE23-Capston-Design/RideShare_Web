@@ -135,6 +135,20 @@ const ListComponent = () => {
     return () => observer1 && observer1.disconnect();
   }, [target1, isCarpoolshow]);
 
+  // 파티 참여
+  // 자신이 만든 파티에 자신이 참여하는 상황 배제 필요
+  const onClickJoinParty = async (item) => {
+    try {
+      const response = await customAPI.put(`/parties/${item.pid}/participate`);
+
+      if (response.status === 200) {
+        console.log("Successfully joined party", response);
+      }
+    } catch (e) {
+      console.log("Failed to join party", e);
+    }
+  };
+
   return (
     // 각 listItem의 id는 코드 동작을 확인하기 위해 임시로 넣은 것이다.
     <Main>
@@ -154,7 +168,9 @@ const ListComponent = () => {
                 <CurrentMember>
                   {item.currentHeadcnt}/{item.totalHeadcnt} 명
                 </CurrentMember>
-                <CparpoolJoinButton>참여</CparpoolJoinButton>
+                <CparpoolJoinButton onClick={() => onClickJoinParty(item)}>
+                  참여
+                </CparpoolJoinButton>
               </ListCarItem>
             );
           })}
@@ -176,7 +192,9 @@ const ListComponent = () => {
                 <CurrentMember>
                   {item.currentHeadcnt}/{item.totalHeadcnt} 명
                 </CurrentMember>
-                <JoinButton>참여</JoinButton>
+                <JoinButton onClick={() => onClickJoinParty(item)}>
+                  참여
+                </JoinButton>
               </ListTaxiItem>
             );
           })}
