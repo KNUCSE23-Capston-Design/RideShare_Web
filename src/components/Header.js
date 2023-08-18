@@ -113,7 +113,7 @@ const Header = () => {
       </StyledNav>
       <NavLists>
         <NavItem>
-          <NavLink to="/Info">내 정보</NavLink>
+          <NavLink to="/Info/Profile">내 정보</NavLink>
         </NavItem>
         {isLoggedIn ? (
           <CustomNavItem>
