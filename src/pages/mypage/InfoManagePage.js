@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoggedInState } from "../../atoms";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import UserProfile from "../../assets/icon/UserProfile.png";
 import { customAPI } from "../../customAPI";
 
 const InfoManage = () => {
@@ -71,74 +69,47 @@ const InfoManage = () => {
 
   return (
     <StyledContainer>
-      <LeftSection>
-        <StyledHeading>마이페이지</StyledHeading>
-        <div>
-          <StyledText>
-            <Link to="/Info">
-              <strong>내 프로필</strong>
-            </Link>
-          </StyledText>
-          <StyledText>
-            <Link to="/Info/Manage">
-              <strong>계정 관리</strong>
-            </Link>
-          </StyledText>
-          <StyledText>
-            <Link to="/Info/MyParty">
-              <strong>작성 글</strong>
-            </Link>
-          </StyledText>
-          <StyledText>
-            <Link to="/Info/JoinParty">
-              <strong>Share 후기</strong>
-            </Link>
-          </StyledText>
-        </div>
-      </LeftSection>
-      <RightSection>
+      <CenteredContent>
         <StyledHeading>계정 관리</StyledHeading>
-        <CenteredContent>
-          <StyledTable>
-            <StyledRow>
-              <StyledTitleCell>
-                <SellText>아이디</SellText>
-              </StyledTitleCell>
-              <StyledCell>
-                <SellText>{userInfo.id}</SellText>
-              </StyledCell>
-            </StyledRow>
-            <StyledRow>
-              <StyledTitleCell>
-                <SellText>비밀번호</SellText>
-              </StyledTitleCell>
-              <StyledCell>
-                {!isPwChangeButtonClicked ? (
-                  <StyledButton onClick={onClickChangePwButton}>
-                    비밀번호 변경
-                  </StyledButton>
-                ) : (
-                  <>
-                    <input
-                      onChange={(e) => setPw(e.target.value)}
-                      value={pw}
-                      placeholder="기존 비밀번호"
-                      type="password"
-                    />
-                    <input
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      value={newPassword}
-                      placeholder="새로운 비밀번호"
-                      type="password"
-                    />
-                    <button onClick={changePassword}>입력</button>
-                  </>
-                )}
-              </StyledCell>
-            </StyledRow>
-          </StyledTable>
-        </CenteredContent>
-      </RightSection>
+        <StyledTable>
+          <StyledRow>
+            <StyledTitleCell>
+              <SellText>아이디</SellText>
+            </StyledTitleCell>
+            <StyledCell>
+              <SellText>{userInfo.id}</SellText>
+            </StyledCell>
+          </StyledRow>
+          <StyledRow>
+            <StyledTitleCell>
+              <SellText>비밀번호</SellText>
+            </StyledTitleCell>
+            <StyledCell>
+              {!isPwChangeButtonClicked ? (
+                <StyledButton onClick={onClickChangePwButton}>
+                  비밀번호 변경
+                </StyledButton>
+              ) : (
+                <>
+                  <input
+                    onChange={(e) => setPw(e.target.value)}
+                    value={pw}
+                    placeholder="기존 비밀번호"
+                    type="password"
+                  />
+                  <input
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    value={newPassword}
+                    placeholder="새로운 비밀번호"
+                    type="password"
+                  />
+                  <button onClick={changePassword}>입력</button>
+                </>
+              )}
+            </StyledCell>
+          </StyledRow>
+        </StyledTable>
+      </CenteredContent>
     </StyledContainer>
   );
 };
@@ -150,31 +121,12 @@ const StyledContainer = styled.div`
   height: 100vh;
 `;
 
-const LeftSection = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  margin: 20px;
-  padding: 20px;
-`;
-
-const RightSection = styled.div`
-  flex: 4;
-  display: flex;
-  flex-direction: column;
-  padding: 60px;
-  background-color: #f9fbfc;
-  border-left: 1px solid #ccc;
-`;
-
 const CenteredContent = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 1%;
-  margin-right: 60%;
 `;
 
 const StyledHeading = styled.h1`
@@ -213,12 +165,6 @@ const StyledButton = styled.button`
   cursor: pointer;
 `;
 
-const StyledImageContainer = styled.div`
-  margin: 10px;
-  margin-top: 30px;
-  margin-left: 20px;
-`;
-
 const StyledTitleCell = styled.div`
   display: table-cell;
   padding: 5px 10px;
@@ -229,23 +175,10 @@ const StyledTitleCell = styled.div`
   border-left: none; /* 셀에서 왼쪽 테두리 제거 */
 `;
 
-const StyledText = styled.p`
-  text-decoration: none;
-  font-weight: bold;
-  padding: 5px;
-`;
-
 const SellText = styled.p`
   text-decoration: none;
   font-weight: bold;
   padding: 20px;
-`;
-
-const StyledTextWithMargin = styled.p`
-  text-decoration: none;
-  font-weight: bold;
-  padding: 5px;
-  margin-left: 20px;
 `;
 
 export default InfoManage;
