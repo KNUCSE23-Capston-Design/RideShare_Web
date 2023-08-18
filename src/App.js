@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Home from "./pages/HomePage";
 import MapPage from "./pages/MapPage";
 import Info from "./pages/mypage/InfoPage";
+import InfoProfile from "./pages/mypage/InfoProfile";
 import InfoManage from "./pages/mypage/InfoManagePage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
@@ -23,10 +24,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/MapPage" element={<MapPage />} />
-          <Route path="/Info" element={<Info />} />
-          <Route path="/Info/Manage" element={<InfoManage />} />
-          <Route path="/Info/MyParty" element={<MyParty />} />
-          <Route path="/Info/JoinParty" element={<JoinParty />} />
+          <Route path="/Info/*" element={<Info />}>
+            <Route path="Profile" element={<InfoProfile />} />
+            <Route path="Manage" element={<InfoManage />} />
+            <Route path="MyParty" element={<MyParty />} />
+            <Route path="JoinParty" element={<JoinParty />} />
+          </Route>
           <Route path="/Login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
         </Routes>
