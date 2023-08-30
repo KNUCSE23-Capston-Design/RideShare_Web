@@ -68,6 +68,7 @@ customAPI.interceptors.response.use(
           return customAPI(originalConfig);
         }
       } catch (err) {
+        window.alert("Error: " + err.message);
         console.log("토큰 갱신 error: " + err.response.data.message);
         // const t = getCookieToken();
         // const a = sessionStorage.getItem("accessToken");
