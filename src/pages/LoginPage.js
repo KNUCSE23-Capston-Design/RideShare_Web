@@ -11,6 +11,7 @@ const Login = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [LoginisRight, setLoginisRight] = useState(true); //로그인시 아이디와 비밀번호가 맞는가?
   const navigate = useNavigate();
 
   // 암걸려서 만든 엔터키 이벤트 감지
@@ -51,6 +52,7 @@ const Login = () => {
       } else {
         // 로그인 실패
         console.log("Login failed");
+        setLoginisRight(false);
       }
     } catch (error) {
       console.error("Error logging in:", error);
@@ -79,6 +81,10 @@ const Login = () => {
         placeholder="Password"
         type="password"
       />
+      {LoginisRight === false && (
+        <ErrorMessage>아이디 또는 비밀번호를 잘못 입력했습니다.
+          입력하신 내용을 다시 확인해주세요.</ErrorMessage>
+      )}
       <LoginButton onClick={handleLogin}>로그인</LoginButton>
       <SignupText>
         RideShare가 처음이신가요?{" "}
@@ -131,6 +137,11 @@ const LoginButton = styled.button`
 
 const SignupText = styled.p`
   margin-top: 20px;
+`;
+
+const ErrorMessage = styled.li`
+  color: red;
+  list-style-type: disc; //둥근 점(disc)표시
 `;
 
 const SignupLink = styled.span`
