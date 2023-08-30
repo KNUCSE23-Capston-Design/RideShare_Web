@@ -30,11 +30,14 @@ export default Home;
 const MainDiv = styled.div`
   position: relative;
   width: 100%;
-  height: calc(100vh - 78.6px);
+  // height: calc(100vh - 78.6px);
+  height: 100%;
+  padding-top: 100px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f4f8fe;
+  // background-color: #f4f8fe;
+  background-color: #ffffff;
 `;
 
 const PhraseWrapper = styled.div`

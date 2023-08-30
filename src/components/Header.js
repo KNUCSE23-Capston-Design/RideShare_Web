@@ -8,10 +8,9 @@ import {
   taxiDataState,
   isLoggedInState,
 } from "../atoms";
-import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
-import { removeCookieToken, getCookieToken } from "../Cookies";
+import { ReactComponent as Logo } from "../assets/logo/Logo_word.svg";
+import { removeCookieToken } from "../Cookies";
 import styled from "styled-components";
-import { customAPI } from "../customAPI";
 
 const Header = () => {
   const resetTaxiMarkerData = useResetRecoilState(taxiDataState);
@@ -22,17 +21,17 @@ const Header = () => {
   const [showTaxi, setshowTaxi] = useRecoilState(showTaxiState);
   const [carpoolData, setCarpoolData] = useRecoilState(carpoolDataState);
   const [taxiData, setTaxiData] = useRecoilState(taxiDataState);
+  const navigate = useNavigate();
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  /** ------------------------------------------------------------------ */
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [logoMargin, setLogoMargin] = useState("270px");
   const [loginMargin, setLoginMargin] = useState("270px");
-  const refreshToken = getCookieToken();
-  const accessToken = sessionStorage.getItem("accessToken");
-  const navigate = useNavigate();
+  // 반응형 헤더 네비게이션 버튼
+  const [isNavActive, setIsNavActive] = useState(false);
 
-  // f5을 실행시키게 되면 store 자체가 초기화가 되기 때문에 쿠키의 존재유무를 통해 로그인 상태를 유지한다.
-  // 중요!!!!!! : 유효한 토큰인지 체크할 수 있는 방법을 찾기
   const checkLogin = () => {
-    // console.log(token);
     if (!accessToken) {
       setIsLoggedIn(false);
     } else {
@@ -42,12 +41,16 @@ const Header = () => {
 
   const handleResize = () => {
     const windowWidth = window.innerWidth;
-    if (windowWidth <= 1500) {
-      setLogoMargin("30px");
+    if (windowWidth <= 1200) {
+      setLogoMargin("40px");
       setLoginMargin("30px");
     } else {
-      setLogoMargin("270px");
-      setLoginMargin("270px");
+      setLogoMargin("20vw");
+      setLoginMargin("20vw");
+    }
+
+    if (windowWidth > 1000) {
+      setIsNavActive(false);
     }
   };
 
@@ -69,6 +72,7 @@ const Header = () => {
   };
 
   const handleCarpoolClick = () => {
+    setIsNavActive(!isNavActive);
     resetTaxiMarkerData();
     resetshowTaxi();
     // fetchCarpoolData();
@@ -76,6 +80,7 @@ const Header = () => {
   };
 
   const handleTaxiClick = () => {
+    setIsNavActive(!isNavActive);
     resetCarpoolMarkerData();
     resetshowCarpool();
     // fetchTaxiData();
@@ -89,71 +94,113 @@ const Header = () => {
     navigate("/");
   };
 
+  const toggleButton = () => {
+    setIsNavActive(!isNavActive);
+  };
+
   return (
-    <StyledHeader>
-      <Link to="/" onClick={handleHomeClick}>
-        <MainLogo margin={logoMargin} />
-      </Link>
-      <StyledNav>
+    <>
+      <StyledHeader>
+        <Link to="/" onClick={handleHomeClick}>
+          <MainLogo margin={logoMargin} />
+        </Link>
+        <StyledNav>
+          <NavLists>
+            <NavGroup>
+              <NavItem>
+                <CustomNavLink to="/MapPage" onClick={handleCarpoolClick}>
+                  Carpool
+                </CustomNavLink>
+              </NavItem>
+              <Divider />
+              <NavItem>
+                <CustomNavLink to="/MapPage" onClick={handleTaxiClick}>
+                  Taxi
+                </CustomNavLink>
+              </NavItem>
+            </NavGroup>
+          </NavLists>
+        </StyledNav>
         <NavLists>
-          <NavGroup>
-            <NavItem>
-              <NavLink to="/MapPage" onClick={handleCarpoolClick}>
-                카풀
-              </NavLink>
-            </NavItem>
-            <Divider />
-            <NavItem>
-              <NavLink to="/MapPage" onClick={handleTaxiClick}>
-                택시
-              </NavLink>
-            </NavItem>
-          </NavGroup>
+          {isLoggedIn ? (
+            <NavGroup>
+              <NavItem>
+                <CustomNavLink to="/Info/Profile">MyPage</CustomNavLink>
+              </NavItem>
+              <CustomNavItem>
+                <LoginButton
+                  to="/"
+                  onClick={handleLogoutClick}
+                  margin={loginMargin}
+                >
+                  Logout
+                </LoginButton>
+              </CustomNavItem>
+            </NavGroup>
+          ) : (
+            <CustomNavItem>
+              <LoginButton to="/Login" margin={loginMargin}>
+                Login
+              </LoginButton>
+            </CustomNavItem>
+          )}
         </NavLists>
-      </StyledNav>
-      <NavLists>
-        <NavItem>
-          <NavLink to="/Info/Profile">내 정보</NavLink>
-        </NavItem>
-        {isLoggedIn ? (
-          <CustomNavItem>
-            <CustomNavLink
-              to="/"
-              onClick={handleLogoutClick}
-              margin={loginMargin}
+        <ToggleButton
+          className={isNavActive ? "active" : ""}
+          onClick={toggleButton}
+        >
+          <Bar />
+          <Bar />
+          <Bar />
+        </ToggleButton>
+      </StyledHeader>
+      <MobileNavDiv isNavActive={isNavActive}>
+        <MobileNavList isNavActive={isNavActive}>
+          <MobileNavLink
+            to="/MapPage"
+            onClick={handleCarpoolClick}
+            isNavActive={isNavActive}
+          >
+            Carpool
+          </MobileNavLink>
+          <MobileNavLink
+            to="/MapPage"
+            onClick={handleTaxiClick}
+            isNavActive={isNavActive}
+          >
+            Taxi
+          </MobileNavLink>
+          {isLoggedIn ? (
+            <MobileNavLink
+              to="/Info/Profile"
+              onClick={handleTaxiClick}
+              isNavActive={isNavActive}
             >
-              로그아웃
-            </CustomNavLink>
-          </CustomNavItem>
-        ) : (
-          <CustomNavItem>
-            <CustomNavLink to="/Login" margin={loginMargin}>
-              로그인
-            </CustomNavLink>
-          </CustomNavItem>
-        )}
-      </NavLists>
-    </StyledHeader>
+              MyPage
+            </MobileNavLink>
+          ) : null}
+        </MobileNavList>
+      </MobileNavDiv>
+    </>
   );
 };
 
 export default Header;
 
 const MainLogo = styled(Logo)`
+  padding: 0;
   width: 140px;
-  height: 50px;
-  margin-top: 14px;
+  height: 100%;
   margin-left: ${(props) => props.margin};
   transition: all 0.5s ease;
 `;
 
 const StyledHeader = styled.header`
+  height : 50px;
   display: flex;
   justify-content: space-between;
-  margin: 0;
+  padding 20px 0;
   font-family: "Noto Sans KR", sans-serif;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
 `;
 
 const StyledNav = styled.nav`
@@ -180,21 +227,15 @@ const NavItem = styled.li`
   margin-left: 10px;
 `;
 
-const NavLink = styled(Link)`
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-  transition: all 0.5s ease;
-  :hover {
-    color: #0583f2;
-  }
-`;
-
 const Divider = styled.div`
   width: 1px;
   height: 12px;
   background-color: #ccc;
   margin: 0 10px;
+
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const CustomNavItem = styled.li`
@@ -202,12 +243,130 @@ const CustomNavItem = styled.li`
 `;
 
 const CustomNavLink = styled(Link)`
+  font-size: 19px;
   text-decoration: none;
   color: black;
   font-weight: bold;
-  transition: all 0.5s ease;
-  margin-right: ${(props) => props.margin};
+  transition: all 0.3s ease;
   :hover {
     color: #0583f2;
+  }
+
+  @media (max-width: 1000px) {
+    display: none;
+  }
+`;
+
+const LoginButton = styled(Link)`
+  width: 100px;
+  padding: 5px 20px 9px 20px;
+  font-size: 19px;
+  text-decoration: none;
+  color: #0583f2;
+  font-weight: bold;
+  border: 2px solid #0583f2;
+  border-radius: 25px;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  margin-right: ${(props) => props.margin};
+  :hover {
+    color: #ffffff;
+    border: 2px solid #0583f2;
+    background-color: #0583f2;
+  }
+`;
+
+const ToggleButton = styled.button`
+  display: none;
+
+  @media screen and (max-width: 1000px) {
+    margin-right: 30px;
+    // margin-top: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+`;
+
+const Bar = styled.span`
+  width: 30px;
+  height: 3px;
+  background-color: black;
+  margin: 3px 0;
+  transition: transform 0.3s, opacity 0.3s;
+
+  &:nth-child(1) {
+    ${ToggleButton}.active & {
+      transform: translateY(9px) rotate(45deg);
+    }
+  }
+
+  &:nth-child(2) {
+    ${ToggleButton}.active & {
+      opacity: 0;
+    }
+  }
+
+  &:nth-child(3) {
+    ${ToggleButton}.active & {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+  }
+`;
+
+const MobileNavDiv = styled.div`
+  display: none;
+
+  @media screen and (max-width: 1000px) {
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    background-color: #0583f2;
+    opacity: 0.9;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: ${({ isNavActive }) => (isNavActive ? "40vh" : "0")};
+    transition: height 0.5s;
+  }
+`;
+
+const MobileNavList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const MobileNavLink = styled(Link)`
+  position: relative;
+  font-size: 40px;
+  margin-top: 20px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  opacity: ${({ isNavActive }) => (isNavActive ? 1 : 0)};
+  pointer-events: ${({ isNavActive }) => (isNavActive ? "auto" : "none")};
+  transition: all 0.3s ease, opacity 0.3s;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background-color: white;
+    bottom: -3px;
+    left: 0;
+    transition: width 0.3s ease;
+  }
+
+  &:hover:before {
+    width: 100%;
   }
 `;
