@@ -3,45 +3,45 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const InfoNavBar = () => {
-    return (
-        <StyledNavBar>
-            <StyledHeading>마이페이지</StyledHeading>
-            <StyledText>
-                <Link to="/Info/Profile">
-                    <strong>내 프로필</strong>
-                </Link>
-            </StyledText>
-            <StyledText>
-                <Link to="/Info/Manage">
-                    <strong>계정 관리</strong>
-                </Link>
-            </StyledText>
-            <StyledText>
-                <Link to="/Info/MyParty">
-                    <strong>작성 글</strong>
-                </Link>
-            </StyledText>
-            <StyledText>
-                <Link to="/Info/JoinParty">
-                    <strong>Share 후기</strong>
-                </Link>
-            </StyledText>
-        </StyledNavBar>
-    );
+  return (
+    <StyledNavBar>
+      <CustomNavLink to="/Info/Profile">
+        <strong>내 프로필</strong>
+      </CustomNavLink>
+
+      <CustomNavLink to="/Info/MyParty">
+        <strong>작성 글</strong>
+      </CustomNavLink>
+
+      <CustomNavLink to="/Info/JoinParty">
+        <strong>Share 후기</strong>
+      </CustomNavLink>
+    </StyledNavBar>
+  );
 };
 
 const StyledNavBar = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 20px;
-  padding: 20px;
+  padding-top: 40px;
+  margin-right: 20px;
 `;
 
-const StyledText = styled.p`
+const CustomNavLink = styled(Link)`
+  font-size: 18px;
   text-decoration: none;
+  color: black;
+  padding: 10px;
   font-weight: bold;
-  padding: 5px;
+  transition: all 0.3s ease;
+  :hover {
+    color: #0583f2;
+  }
+
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const StyledHeading = styled.h1`

@@ -4,7 +4,6 @@ import InfoNavBar from "../../components/InfoNavBar";
 import { Outlet } from "react-router-dom";
 
 const Info = () => {
-
   return (
     <StyledContainer>
       <LeftSection>
@@ -21,26 +20,25 @@ const StyledContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  height: 100vh;
 `;
 
 const LeftSection = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
-  margin: 20px;
-  padding: 20px;
+  margin-left: 7vw;
+  margin-right: 1vw;
 `;
 
 const RightSection = styled.div`
-  flex: 4;
+  flex: 5;
+  margin-right: 20vw;
+
   display: flex;
   flex-direction: column;
-  padding: 60px;
-  background-color: #f9fbfc;
-  border-left: 1px solid #ccc;
+  height: calc(100vh - 90px);
 `;
 
 export default Info;
