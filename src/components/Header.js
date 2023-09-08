@@ -191,8 +191,13 @@ const MainLogo = styled(Logo)`
   padding: 0;
   width: 140px;
   height: 100%;
+  padding-right: 34px;
   margin-left: ${(props) => props.margin};
   transition: all 0.5s ease;
+
+  media screen and (max-width : 480px) {
+    padding-right: 0;
+  }
 `;
 
 const StyledHeader = styled.header`
@@ -208,6 +213,10 @@ const StyledNav = styled.nav`
   align-items: center;
   margin-right: auto;
   margin-left: auto;
+
+  media screen and (max-width : 480px) {
+    display: none;
+  }
 `;
 
 const NavLists = styled.ul`
@@ -225,6 +234,11 @@ const NavItem = styled.li`
   list-style: none;
   margin-right: 10px;
   margin-left: 10px;
+
+  @media (max-width: 480px) {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
 `;
 
 const Divider = styled.div`
@@ -240,6 +254,10 @@ const Divider = styled.div`
 
 const CustomNavItem = styled.li`
   margin-left: 30px;
+
+  @media (max-width: 1000px) {
+    margin-left: 0;
+  }
 `;
 
 const CustomNavLink = styled(Link)`
@@ -273,6 +291,10 @@ const LoginButton = styled(Link)`
     color: #ffffff;
     border: 2px solid #0583f2;
     background-color: #0583f2;
+  }
+
+  @media screen and (max-width: 480) {
+    margin-left: 0;
   }
 `;
 
