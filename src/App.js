@@ -7,7 +7,6 @@ import Home from "./pages/HomePage";
 import MapPage from "./pages/MapPage";
 import Info from "./pages/mypage/InfoPage";
 import InfoProfile from "./pages/mypage/InfoProfile";
-import InfoManage from "./pages/mypage/InfoManagePage";
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignUpPage";
 import MyParty from "./pages/mypage/MyParty";
@@ -26,7 +25,6 @@ function App() {
           <Route path="/MapPage" element={<MapPage />} />
           <Route path="/Info/*" element={<Info />}>
             <Route path="Profile" element={<InfoProfile />} />
-            <Route path="Manage" element={<InfoManage />} />
             <Route path="MyParty" element={<MyParty />} />
             <Route path="JoinParty" element={<JoinParty />} />
           </Route>
