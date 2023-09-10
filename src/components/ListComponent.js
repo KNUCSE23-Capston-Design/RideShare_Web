@@ -36,7 +36,7 @@ const ListComponent = () => {
       },
     });
 
-    // console.log(responseC);
+    console.log(responseC);
 
     if (carpoolId === -1) carpoolId = responseC.data[0].pid + 1;
     // carpoolId = responseC.data[0].pid;
@@ -58,7 +58,7 @@ const ListComponent = () => {
     // console.log(data);
 
     setCarpoolItems((prev) => prev.concat(data));
-    carpoolId = data[data.length - 1].pid;
+    if (carpoolId > 21) carpoolId = data[data.length - 1].pid;
     // console.log(carpoolId, "카풀");
   };
 
@@ -76,8 +76,8 @@ const ListComponent = () => {
     // console.log(data[data.length - 1]);
 
     setTaxiItems((prev) => prev.concat(data));
-    taxiId = data[data.length - 1].pid;
-    // console.log(taxiId, "택시");
+    if (taxiId > 1) taxiId = data[data.length - 1].pid;
+    console.log(taxiId, "택시");
   };
 
   useEffect(() => {
