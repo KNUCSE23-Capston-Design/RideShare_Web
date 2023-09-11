@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { TaxiWritingState } from "../atoms";
@@ -9,6 +9,14 @@ import "react-toastify/dist/ReactToastify.css";
 const TaxiWritingComponent = () => {
   const resetTaxiWriting = useResetRecoilState(TaxiWritingState);
   const [showPostcode, setShowPostcode] = useState(false);
+  const [top, setTop] = useState(
+    window.scrollY + window.innerHeight / 2 + "px"
+  );
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    setTop(scrollTop + window.innerHeight / 2 + "px"); // top 값을 문자열로 변경
+  };
 
   const [taxiData, setTaxiData] = useState({
     type: "택시",
@@ -115,9 +123,19 @@ const TaxiWritingComponent = () => {
     }
   };
 
+  // 컴포넌트가 마운트될 때 스크롤 이벤트 리스너 등록
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트가 언마운트될 때 리스너 제거
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
-      <Container>
+      <Container top={top}>
         <Title>택시 글쓰기</Title> {/* Added title */}
         <InputContainer>
           <InputLabel>출발지</InputLabel>
@@ -191,7 +209,7 @@ const Container = styled.div`
   max-width: 600px;
   height: 65vh;
   position: absolute;
-  top: 50%;
+  top: ${(props) => props.top};
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;

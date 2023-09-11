@@ -9,6 +9,16 @@ import "react-toastify/dist/ReactToastify.css";
 const CarpoolWritingComponent = () => {
   const resetCarpoolWriting = useResetRecoilState(CarpoolWritingState);
   const [showPostcode, setShowPostcode] = useState(false);
+  const [top, setTop] = useState(
+    window.scrollY + window.innerHeight / 2 + "px"
+  );
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    setTop(scrollTop + window.innerHeight / 2 + "px"); // top 값을 문자열로 변경
+  };
 
   const [carpoolData, setCarpoolData] = useState({
     type: "카풀",
@@ -31,6 +41,7 @@ const CarpoolWritingComponent = () => {
   };
 
   const handlePostcode = async (whatpoint) => {
+    setIsPopupOpen(true);
     new window.daum.Postcode({
       oncomplete: async (data) => {
         // 사용자가 다음 우편번호 팝업에서 주소를 선택하면,
@@ -83,6 +94,10 @@ const CarpoolWritingComponent = () => {
         // 팝업 열기
         setShowPostcode(true);
       },
+      onclose: () => {
+        // 팝업이 닫힐 때 실행되는 콜백
+        setIsPopupOpen(false);
+      },
     }).open();
   };
 
@@ -118,13 +133,23 @@ const CarpoolWritingComponent = () => {
     }
   };
 
+  // 컴포넌트가 마운트될 때 스크롤 이벤트 리스너 등록
   useEffect(() => {
-    console.log(carpoolData);
-  }, [carpoolData]);
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트가 언마운트될 때 리스너 제거
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(isPopupOpen);
+  }, [isPopupOpen]);
 
   return (
     <>
-      <Container>
+      <Container top={top}>
         <Title>카풀 글쓰기</Title> {/* Added title */}
         <InputContainer>
           <InputLabel>출발지</InputLabel>
@@ -197,6 +222,7 @@ const CarpoolWritingComponent = () => {
         </ButtonContainer>
       </Container>
       <ToastContainer />
+      {isPopupOpen && <BlurBackground />}
     </>
   );
 };
@@ -209,7 +235,7 @@ const Container = styled.div`
   max-width: 600px;
   height: 65vh;
   position: absolute;
-  top: 50%;
+  top: ${(props) => props.top};
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
@@ -278,4 +304,14 @@ const CloseButton = styled.button`
   font-weight: bold;
   border: none;
   cursor: pointer; //마우스 포인터 변화
+`;
+
+const BlurBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px); /* 블러 처리 스타일 */
+  z-index: 999;
 `;
