@@ -74,16 +74,16 @@ customAPI.interceptors.response.use(
         // const a = sessionStorage.getItem("accessToken");
         // console.log(a);
         // console.log(t);
-        if (
-          err.response.data.message === "Refresh Token이 유효하지 않습니다." ||
-          err.response.data.message ===
-            "로그아웃된 사용자입니다. Refresh Token이 존재하지 않습니다." ||
-          err.response.data.message ===
-            "Refresh Token이 일치하지 않거나 만료되었습니다." ||
-          err.response.data.message === "Access Token이 만료되었습니다."
-        ) {
-          window.location.href = "http://localhost:3000/login";
-        }
+        // if (
+        //   err.response.data.message === "Refresh Token이 유효하지 않습니다." ||
+        //   err.response.data.message ===
+        //     "로그아웃된 사용자입니다. Refresh Token이 존재하지 않습니다." ||
+        //   err.response.data.message ===
+        //     "Refresh Token이 일치하지 않거나 만료되었습니다." ||
+        //   err.response.data.message === "Access Token이 만료되었습니다."
+        // ) {
+        //   window.location.href = "http://localhost:3000/login";
+        // }
       }
 
       return Promise.reject(err);
