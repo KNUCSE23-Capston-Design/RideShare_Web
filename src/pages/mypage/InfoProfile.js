@@ -5,7 +5,9 @@ import { customAPI } from "../../customAPI";
 import styled from "styled-components";
 import { ReactComponent as UserProfileImage } from "../../assets/icon/UserProfile.svg";
 import { useNavigate } from "react-router-dom";
-import { Column } from "react-virtualized";
+import { removeCookieToken } from "../../Cookies";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InfoProfile = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -16,7 +18,30 @@ const InfoProfile = () => {
   const accessToken = sessionStorage.getItem("accessToken");
   const [isPwChangeButtonClicked, setisPwChangeButtonClicked] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  const [checkNewPassword, setCheckNewPassword] = useState("");
+  const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState(false);
+  const [isNicDup, setIsNickDup] = useState(false);
   const [pw, setPw] = useState("");
+
+  const showPopupMessage = (msg) => {
+    if (msg === "pw") {
+      toast.success("비밀번호가 변경되었습니다. 다시 로그인해주십시오.", {
+        autoClose: 900, // 자동 닫힘 지속 시간을 1초로 설정
+        onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+      });
+    } else if (msg === "nick") {
+      toast.success("닉네임이 변경되었습니다.", {
+        autoClose: 900, // 자동 닫힘 지속 시간을 1초로 설정
+      });
+    }
+  };
+
+  const handleClose = () => {
+    removeCookieToken();
+    sessionStorage.removeItem("accessToken");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
 
   useEffect(() => {
     if (!accessToken) {
@@ -25,10 +50,6 @@ const InfoProfile = () => {
       fetchUserInfo();
     }
   }, []);
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
 
   const fetchUserInfo = async () => {
     try {
@@ -43,15 +64,31 @@ const InfoProfile = () => {
     }
   };
 
-  // DB 전체의 닉네임들과 중복 비교를 해야하나?
-  const onClickChangeNicButton = () => {
-    setChangeNic(true);
+  const checkNicnameDuplication = async () => {
+    try {
+      const response = await customAPI.get(
+        `/members/check?nickname=${nickname}`
+      );
+
+      if (response.status === 200) {
+        return false;
+      }
+    } catch (error) {
+      if (error.response.data.status === 400) {
+        console.log(error);
+        return true;
+      }
+    }
   };
 
   const changeNicname = async () => {
+    const isNicknameDuplicate = await checkNicnameDuplication();
+
     if (userInfo.nickname === nickname) {
-      // 해당 기능은 렌더링 또는 알람형식으로 사용자가 인식할 수 있게 변경.
       console.log("기존 닉네임과 동일합니다.");
+    } else if (isNicknameDuplicate) {
+      console.log("이미 사용중인 닉네임입니다.");
+      setIsNickDup(true);
     } else {
       try {
         const data = await customAPI.put(`/members/nickname`, {
@@ -61,21 +98,35 @@ const InfoProfile = () => {
         if (data.status === 200) {
           console.log("sucessfully updated nickname");
         }
+
+        setChangeNic(false);
+        setNickname("");
+        fetchUserInfo();
+        showPopupMessage("nick");
       } catch (error) {
         console.log("faild to update nickname:", error);
       }
     }
 
-    setChangeNic(false);
-    fetchUserInfo();
+    setNickname("");
+  };
+
+  const onClickChangeNicButton = () => {
+    setChangeNic(true);
   };
 
   const cancelChangeNic = () => {
     setChangeNic(false);
+    setIsNickDup(false);
+    setNickname("");
   };
 
   const cancelChangePw = () => {
     setisPwChangeButtonClicked(false);
+    setPasswordsDoNotMatch(false);
+    setPw("");
+    setCheckNewPassword("");
+    setNewPassword("");
   };
 
   if (!accessToken) {
@@ -100,24 +151,32 @@ const InfoProfile = () => {
     //   return;
     // }
 
-    try {
-      const data = await customAPI.put(`/members/password`, {
-        oldPassword: pw,
-        newPassword: newPassword,
-      });
+    if (newPassword !== checkNewPassword) {
+      setPasswordsDoNotMatch(true);
+    } else {
+      try {
+        const data = await customAPI.put(`/members/password`, {
+          oldPassword: pw,
+          newPassword: newPassword,
+        });
 
-      if (data.status === 200) {
-        console.log("sucessfully updated password");
+        if (data.status === 200) {
+          console.log("sucessfully updated password");
+        }
+
+        setPw("");
+        setCheckNewPassword("");
+        setNewPassword("");
+      } catch (error) {
+        console.log("faild to update password:", error);
+        if (error.response.status === 400) {
+          console.log("기존 비밀번호와 동일합니다.");
+        }
       }
-    } catch (error) {
-      console.log("faild to update password:", error);
-      if (error.response.status === 400) {
-        console.log("기존 비밀번호와 동일합니다.");
-      }
+
+      setisPwChangeButtonClicked(false);
+      showPopupMessage("pw");
     }
-
-    setisPwChangeButtonClicked(false);
-    fetchUserInfo();
   };
 
   return (
@@ -161,6 +220,9 @@ const InfoProfile = () => {
                   ></NickInput>
                   <InputButton onClick={changeNicname}>입력</InputButton>
                   <InputButton onClick={cancelChangeNic}>취소</InputButton>
+                  {isNicDup ? (
+                    <ErrorMessage>이미 사용중인 닉네임입니다.</ErrorMessage>
+                  ) : null}
                 </>
               ) : (
                 <>
@@ -206,6 +268,17 @@ const InfoProfile = () => {
                       placeholder="새로운 비밀번호"
                       type="password"
                     />
+                    <NickInput
+                      onChange={(e) => setCheckNewPassword(e.target.value)}
+                      value={checkNewPassword}
+                      placeholder="비밀번호 확인"
+                      type="password"
+                    />
+                    {passwordsDoNotMatch ? (
+                      <ErrorMessage>
+                        새로운 비밀번호가 맞지 않습니다.
+                      </ErrorMessage>
+                    ) : null}
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-end" }}>
                     <InputPwButton onClick={changePassword}>입력</InputPwButton>
@@ -217,6 +290,7 @@ const InfoProfile = () => {
           </StyledRow>
         </StyledTable>
       </CenteredContent>
+      <ToastContainer />
     </StyledContainer>
   );
 };
@@ -318,6 +392,12 @@ const NickInput = styled.input`
   padding: 5px;
   border: 1px solid #0583f2;
   border-radius: 10px;
+`;
+
+const ErrorMessage = styled.div`
+  margin: 10px;
+  margin-left: 20px;
+  color: red;
 `;
 
 const InputButton = styled.button`
