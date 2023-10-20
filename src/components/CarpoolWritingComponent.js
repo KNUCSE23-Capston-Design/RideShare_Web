@@ -26,6 +26,8 @@ const CarpoolWritingComponent = () => {
     startLat: "",
     startLng: "",
     endPoint: "",
+    endLat: "",
+    endLng: "",
     totalHeadcnt: 0,
     startDate: "",
     startTime: "",
@@ -85,6 +87,32 @@ const CarpoolWritingComponent = () => {
             ...prevState,
             endPoint: data.address,
           }));
+
+          try {
+            const response = await customAPI.get(
+              "https://dapi.kakao.com/v2/local/search/address.json",
+              {
+                params: {
+                  query: data.address,
+                },
+              }
+            );
+
+            const { documents } = response.data;
+            if (documents.length > 0) {
+              const { y: lat, x: lng } = documents[0].address;
+              console.log(lat, lng);
+              setCarpoolData((prevState) => ({
+                ...prevState,
+                endLat: lat,
+                endLng: lng,
+              }));
+            } else {
+              console.log("Failed to get latitude and longitude.");
+            }
+          } catch (error) {
+            console.log("Error fetching latitude and longitude:", error);
+          }
         }
 
         // 팝업 숨기기
@@ -113,6 +141,8 @@ const CarpoolWritingComponent = () => {
         startLat: carpoolData.startLat,
         startLng: carpoolData.startLng,
         endPoint: carpoolData.endPoint,
+        endLat: carpoolData.endLat,
+        endLng: carpoolData.endLng,
         totalHeadcnt: carpoolData.totalHeadcnt,
         startDate: carpoolData.startDate,
         startTime: carpoolData.startTime,
@@ -242,6 +272,7 @@ const Container = styled.div`
   border-radius: 10px;
   border: 1px solid black;
   overflow: auto;
+  z-index: 1000;
 `;
 
 const Title = styled.h1`
