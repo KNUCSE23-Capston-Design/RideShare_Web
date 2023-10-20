@@ -69,6 +69,8 @@ const Header = () => {
   const handleHomeClick = () => {
     resetCarpoolMarkerData();
     resetTaxiMarkerData();
+    setshowCarpool(false);
+    setshowTaxi(false);
   };
 
   const handleCarpoolClick = () => {
@@ -91,6 +93,7 @@ const Header = () => {
     removeCookieToken();
     sessionStorage.removeItem("accessToken");
     setIsLoggedIn(false);
+    // window.location.reload();
     navigate("/");
   };
 
@@ -108,15 +111,13 @@ const Header = () => {
           <NavLists>
             <NavGroup>
               <NavItem>
-                <CustomNavLink to="/MapPage" onClick={handleCarpoolClick}>
+                <CustomNavLink onClick={handleCarpoolClick}>
                   Carpool
                 </CustomNavLink>
               </NavItem>
               <Divider />
               <NavItem>
-                <CustomNavLink to="/MapPage" onClick={handleTaxiClick}>
-                  Taxi
-                </CustomNavLink>
+                <CustomNavLink onClick={handleTaxiClick}>Taxi</CustomNavLink>
               </NavItem>
             </NavGroup>
           </NavLists>
