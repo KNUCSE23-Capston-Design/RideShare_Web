@@ -3,7 +3,7 @@ import { Container as MapDiv, Polyline } from "react-naver-maps";
 import styled from "styled-components";
 import AllListComponent from "../components/AllListComponent";
 import ListComponent from "../components/ListComponent";
-import MapComponent from "../components/MapComponent1";
+import MapComponent from "../components/MapComponent";
 import CarpoolWritingComponent from "../components/CarpoolWritingComponent";
 import TaxiWritingComponent from "../components/TaxiWritingComponent";
 import {
