@@ -3,26 +3,70 @@ import styled from "styled-components";
 import { customAPI } from "../../customAPI";
 import taxiIcon from "./../../assets/icon/taxi.png";
 import carIcon from "./../../assets/icon/car.png";
+import { Container as MapDiv, Polyline } from "react-naver-maps";
+import MapComponent from "../../components/UserMapComponent";
 import {
   CarpoolWritingState,
   TaxiWritingState,
   showCarpoolState,
   showTaxiState,
+  isChatOnState,
 } from "../../atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 import CarpoolWritingComponent from "../../components/CarpoolWritingComponent";
 import TaxiWritingComponent from "../../components/TaxiWritingComponent";
+import ChatRoom from "../../pages/Chat.js";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MyParty = () => {
   const [partyData, setPartyData] = useState([]);
   const [CarpoolWriting, setCarpoolWriting] =
     useRecoilState(CarpoolWritingState);
   const [TaxiWriting, setTaxiWriting] = useRecoilState(TaxiWritingState);
-  const showCarpool = useRecoilValue(showCarpoolState);
-  const showTaxi = useRecoilValue(showTaxiState);
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [item, setItem] = useState([]);
+  const [top, setTop] = useState(
+    window.scrollY + window.innerHeight / 2 + "px"
+  );
+  const [isChatOn, setIsChatOn] = useRecoilState(isChatOnState);
+
+  const handleChatButtonClicked = (item) => {
+    setItem(item);
+    setIsChatOn(true);
+  };
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    setTop(scrollTop + window.innerHeight / 2 + "px"); // top 값을 문자열로 변경
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    if (isMapOpen === true) {
+      window.removeEventListener("scroll", handleScroll);
+    }
+
+    // 컴포넌트가 언마운트될 때 리스너 제거
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isMapOpen]);
+
+  const showPopupMessage = () => {
+    toast.success("삭제 되었습니다.", {
+      autoClose: 900, // 자동 닫힘 지속 시간을 1초로 설정
+      onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+    });
+  };
+
+  const handleClose = () => {
+    window.location.reload();
+  };
 
   const getMyParty = async () => {
-    console.log("get my party");
+    // console.log("get my party");
     try {
       const response = await customAPI.get(`/members/notice-list/`, {});
 
@@ -31,18 +75,20 @@ const MyParty = () => {
         setPartyData((prev) => prev.concat(item));
       });
 
-      console.log(partyData);
+      // console.log(partyData);
     } catch (err) {
       console.log("Faild to get Party Data", err);
     }
   };
 
   const handleCarpoolButtonClick = () => {
+    handleScroll();
     setCarpoolWriting(true);
     setTaxiWriting(false);
   };
 
   const handleTaxiButtonClick = () => {
+    handleScroll();
     setCarpoolWriting(false);
     setTaxiWriting(true);
   };
@@ -54,9 +100,20 @@ const MyParty = () => {
       if (response.status === 200) {
         console.log("successfully deleted");
       }
+
+      showPopupMessage();
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleMapViewClick = async (item) => {
+    setIsMapOpen(true);
+    setItem(item);
+  };
+
+  const handleCloseMapClick = async (item) => {
+    setIsMapOpen(false);
   };
 
   useEffect(() => {
@@ -97,16 +154,24 @@ const MyParty = () => {
                         </LocationBox>
 
                         <HeadCnt>
-                          {" "}
                           {item.currentHeadcnt}/{item.totalHeadcnt}
                         </HeadCnt>
                         <ButtonBox>
+                          <StyledButton
+                            onClick={() => handleChatButtonClicked(item)}
+                          >
+                            채팅
+                          </StyledButton>
+                          <StyledButton
+                            onClick={() => handleMapViewClick(item)}
+                          >
+                            지도 보기
+                          </StyledButton>
                           <StyledButton onClick={handleCarpoolButtonClick}>
                             수정
                           </StyledButton>
                           <StyledButton
                             onClick={() => handleDeleteButtonClick(item.pid)}
-                            style={{ marginBottom: "0" }}
                           >
                             삭제
                           </StyledButton>
@@ -132,12 +197,21 @@ const MyParty = () => {
                           {item.currentHeadcnt}/{item.totalHeadcnt}
                         </HeadCnt>
                         <ButtonBox>
+                          <StyledButton
+                            onClick={() => handleChatButtonClicked(item)}
+                          >
+                            채팅
+                          </StyledButton>
+                          <StyledButton
+                            onClick={() => handleMapViewClick(item)}
+                          >
+                            지도 보기
+                          </StyledButton>
                           <StyledButton onClick={handleTaxiButtonClick}>
                             수정
                           </StyledButton>
                           <StyledButton
                             onClick={() => handleDeleteButtonClick(item.pid)}
-                            style={{ marginBottom: "0" }}
                           >
                             삭제
                           </StyledButton>
@@ -152,6 +226,23 @@ const MyParty = () => {
       </CenteredContent>
       {CarpoolWriting && <CarpoolWritingComponent />}
       {TaxiWriting && <TaxiWritingComponent />}
+      {isChatOn && <ChatRoom item={item} />}
+      <ToastContainer />
+      {isMapOpen && (
+        <div
+          style={{
+            top: `${top}`,
+            position: "absolute",
+            left: "42%",
+          }}
+        >
+          <MapBox>
+            <MapComponent item={item} />
+          </MapBox>
+          <CloseMapButton onClick={handleCloseMapClick}>닫기</CloseMapButton>
+          <BlurBackground />
+        </div>
+      )}
     </StyledContainer>
   );
 };
@@ -234,19 +325,71 @@ const HeadCnt = styled.h3`
 const ButtonBox = styled.div`
   margin-right: 10px;
   display: flex;
-  flex-direction: column;
   flex: 1;
 `;
 
 const StyledButton = styled.button`
   width: 50px;
-  margin: 0 0 5px 0;
+  margin-right: 10px;
   background-color: #ffffff;
   padding: 5px;
   border: 2px solid;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
+
+  :hover {
+    background-color: whitesmoke;
+  }
+`;
+
+const MapBox = styled(MapDiv)`
+  width: 50vw;
+  min-width: 300px;
+  height: 65vh;
+  position: absolute;
+  top: ${(props) => props.top};
+  // top: 400px;
+  left: 15%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  border: 1px solid black;
+  overflow: auto;
+  z-index: 1000;
+`;
+
+const CloseMapButton = styled.button`
+  padding: 10px;
+  margin-left: 10px;
+  position: absolute;
+  z-index: 1000;
+  top: -290px;
+  left: 55%;
+
+  background-color: #fff;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #0583f2;
+
+  border: none;
+  border-radius: 10px;
+
+  :hover {
+    background-color: whitesmoke;
+  }
+`;
+
+const BlurBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px); /* 블러 처리 스타일 */
+  z-index: 999;
 `;
 
 export default MyParty;
