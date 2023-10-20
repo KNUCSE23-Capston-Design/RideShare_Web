@@ -48,3 +48,13 @@ export const carpoolDataState = atom({
   key: "carpoolDataState",
   default: [],
 });
+export const joinPartyDataState = atom({
+  key: "joinPartyDataState",
+  default: [],
+});
+export const myPartyDataState = atom({
+  key: "myPartyDataState",
+  default: [],
+});
+export const userId = atom({ key: "userId", default: null });
+export const isChatOnState = atom({ key: "isChatOnState", default: false });
