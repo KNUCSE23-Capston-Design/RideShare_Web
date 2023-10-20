@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { setRefreshToken } from "../Cookies";
-import { isLoggedInState } from "../atoms";
+import { isLoggedInState, userId } from "../atoms";
 import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo/mainlogo.svg";
 import styled from "styled-components";
+import { customAPI } from "../customAPI";
 
 const Login = () => {
   // useState : 아이디와 암호 입력 값을 저장
   const [id, setId] = useState("");
+  const [myId, setMyId] = useRecoilState(userId);
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [LoginisRight, setLoginisRight] = useState(true); //로그인시 아이디와 비밀번호가 맞는가?
@@ -49,6 +51,8 @@ const Login = () => {
         setIsLoggedIn(true);
         navigate("/");
         console.log("Login seccess");
+
+        fetchUserInfo();
       } else {
         // 로그인 실패
         console.log("Login failed");
@@ -56,6 +60,19 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error logging in:", error);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await customAPI.get(
+        `http://localhost:8080/members/me`,
+        {}
+      );
+      const data = response.data;
+      setMyId(data.nickname);
+    } catch (error) {
+      console.error("Failed to fetch user information:", error);
     }
   };
 
@@ -82,8 +99,10 @@ const Login = () => {
         type="password"
       />
       {LoginisRight === false && (
-        <ErrorMessage>아이디 또는 비밀번호를 잘못 입력했습니다.
-          입력하신 내용을 다시 확인해주세요.</ErrorMessage>
+        <ErrorMessage>
+          아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시
+          확인해주세요.
+        </ErrorMessage>
       )}
       <LoginButton onClick={handleLogin}>로그인</LoginButton>
       <SignupText>
