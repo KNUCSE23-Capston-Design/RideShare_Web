@@ -10,11 +10,11 @@ const InfoNavBar = () => {
       </CustomNavLink>
 
       <CustomNavLink to="/Info/MyParty">
-        <strong>작성 글</strong>
+        <strong>나의 파티</strong>
       </CustomNavLink>
 
       <CustomNavLink to="/Info/JoinParty">
-        <strong>Share 후기</strong>
+        <strong>참여중인 파티</strong>
       </CustomNavLink>
     </StyledNavBar>
   );
