@@ -12,6 +12,7 @@ const TaxiWritingComponent = () => {
   const [top, setTop] = useState(
     window.scrollY + window.innerHeight / 2 + "px"
   );
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleScroll = () => {
     const scrollTop = window.scrollY;
@@ -24,6 +25,8 @@ const TaxiWritingComponent = () => {
     startLat: "",
     startLng: "",
     endPoint: "",
+    endLat: "",
+    endLng: "",
     totalHeadcnt: 0,
     startDate: "",
     startTime: "",
@@ -37,6 +40,7 @@ const TaxiWritingComponent = () => {
   };
 
   const handlePostcode = async (whatpoint) => {
+    setIsPopupOpen(true);
     new window.daum.Postcode({
       oncomplete: async (data) => {
         // 사용자가 다음 우편번호 팝업에서 주소를 선택하면,
@@ -80,6 +84,32 @@ const TaxiWritingComponent = () => {
             ...prevState,
             endPoint: data.address,
           }));
+
+          try {
+            const response = await customAPI.get(
+              "https://dapi.kakao.com/v2/local/search/address.json",
+              {
+                params: {
+                  query: data.address,
+                },
+              }
+            );
+
+            const { documents } = response.data;
+            if (documents.length > 0) {
+              const { y: lat, x: lng } = documents[0].address;
+              console.log(lat, lng);
+              setTaxiData((prevState) => ({
+                ...prevState,
+                endLat: lat,
+                endLng: lng,
+              }));
+            } else {
+              console.log("Failed to get latitude and longitude.");
+            }
+          } catch (error) {
+            console.log("Error fetching latitude and longitude:", error);
+          }
         }
 
         // 팝업 숨기기
@@ -88,6 +118,10 @@ const TaxiWritingComponent = () => {
       onsearch: (query) => {
         // 팝업 열기
         setShowPostcode(true);
+      },
+      onclose: () => {
+        // 팝업이 닫힐 때 실행되는 콜백
+        setIsPopupOpen(false);
       },
     }).open();
   };
@@ -105,7 +139,9 @@ const TaxiWritingComponent = () => {
         startLat: taxiData.startLat,
         startLng: taxiData.startLng,
         endPoint: taxiData.endPoint,
-        totalHeadcnt: taxiData.totalHead,
+        endLat: taxiData.endLat,
+        endLng: taxiData.endLng,
+        totalHeadcnt: taxiData.totalHeadcnt,
         startDate: taxiData.startDate,
         startTime: taxiData.startTime,
       });
@@ -197,6 +233,7 @@ const TaxiWritingComponent = () => {
         </ButtonContainer>
       </Container>
       <ToastContainer />
+      {isPopupOpen && <BlurBackground />}
     </>
   );
 };
@@ -216,6 +253,7 @@ const Container = styled.div`
   border-radius: 10px;
   border: 1px solid black;
   overflow: auto;
+  z-index: 1000;
 `;
 
 const Title = styled.h1`
@@ -270,4 +308,14 @@ const CloseButton = styled.button`
   font-weight: bold;
   border: none;
   cursor: pointer; //마우스 포인터 변화
+`;
+
+const BlurBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px); /* 블러 처리 스타일 */
+  z-index: 999;
 `;
