@@ -57,8 +57,6 @@ const Header = () => {
   //브라우저의 크기 변화시 로고와 로그인 자연스럽게 변화
   useEffect(() => {
     checkLogin();
-    // fetchCarpoolData();
-    // fetchTaxiData();
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
@@ -77,7 +75,6 @@ const Header = () => {
     setIsNavActive(!isNavActive);
     resetTaxiMarkerData();
     resetshowTaxi();
-    // fetchCarpoolData();
     setshowCarpool(true);
   };
 
@@ -85,7 +82,6 @@ const Header = () => {
     setIsNavActive(!isNavActive);
     resetCarpoolMarkerData();
     resetshowCarpool();
-    // fetchTaxiData();
     setshowTaxi(true);
   };
 
@@ -93,7 +89,6 @@ const Header = () => {
     removeCookieToken();
     sessionStorage.removeItem("accessToken");
     setIsLoggedIn(false);
-    // window.location.reload();
     navigate("/");
   };
 
@@ -111,13 +106,15 @@ const Header = () => {
           <NavLists>
             <NavGroup>
               <NavItem>
-                <CustomNavLink onClick={handleCarpoolClick}>
+                <CustomNavLink to="/" onClick={handleCarpoolClick}>
                   Carpool
                 </CustomNavLink>
               </NavItem>
               <Divider />
               <NavItem>
-                <CustomNavLink onClick={handleTaxiClick}>Taxi</CustomNavLink>
+                <CustomNavLink to="/" onClick={handleTaxiClick}>
+                  Taxi
+                </CustomNavLink>
               </NavItem>
             </NavGroup>
           </NavLists>

@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { showCarpoolState, showTaxiState } from "../atoms";
+import { showCarpoolState, showTaxiState, listItemInfo } from "../atoms";
 import { useRecoilValue } from "recoil";
 import "intersection-observer";
 import { customAPI } from "../customAPI";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // problem : 스크롤 바를 체크하는 target1, target이 서로 연동됨
 const ListComponent = () => {
@@ -14,39 +18,20 @@ const ListComponent = () => {
   const [target1, setTarget1] = useState(null);
 
   const isCarpoolshow = useRecoilValue(showCarpoolState);
-  const isTaxishow = useRecoilValue(showTaxiState);
+
+  const itemInfo = useRecoilValue(listItemInfo);
+
+  const [carpoolItemRefs, setCarpoolItemRefs] = useState(
+    carpoolItems.map(() => React.createRef())
+  );
+  const [taxiItemRefs, setTaxiItemRefs] = useState(
+    taxiItems.map(() => React.createRef())
+  );
 
   let carpoolId = 0;
   let taxiId = 0;
 
-  //useEffect에 의해 observer와 묶여서 매번 호출되는 문제 개선 필요
-  // 요청 API 반환 타입은 number 이다.
-  // const dataExists = async (type) => {
-  //   if (type === "카풀") {
-  //     const carpoolCount = await customAPI.get(`/parties/count`, {
-  //       params: {
-  //         type: type,
-  //       },
-  //     });
-  //     // console.log(carpoolCount);
-  //     if (carpoolCount.data === 0) {
-  //       carpoolId = -1;
-  //     }
-  //   } else if (type === "택시") {
-  //     const taxiCount = await customAPI.get(`/parties/count`, {
-  //       params: {
-  //         type: type,
-  //       },
-  //     });
-
-  //     if (taxiCount.data === 0) {
-  //       taxiId = -1;
-  //     }
-  //   }
-  // };
-
   const getInitialData = async (type) => {
-    // console.log("initial data");
     try {
       const response = await customAPI.get(`/parties`, {
         params: {
@@ -66,7 +51,6 @@ const ListComponent = () => {
 
         carpoolId = data[data.length - 1].pid;
         setCarpoolItems((prev) => prev.concat(data));
-        // console.log(carpoolId);
 
         if (carpoolId === 0) {
           carpoolId = -1;
@@ -89,10 +73,7 @@ const ListComponent = () => {
   };
 
   const fetchData = async (type) => {
-    // console.log("Fetching data");
-
     if (type === "카풀") {
-      // 데이터가 더 이상 없을 때
       if (carpoolId === -1) {
         return;
       }
@@ -119,7 +100,6 @@ const ListComponent = () => {
         console.log("카풀 데이터 호출 에러" + err.message);
       }
     } else if (type === "택시") {
-      // 데이터가 더 이상 없을 때
       if (taxiId === -1) {
         return;
       }
@@ -145,6 +125,34 @@ const ListComponent = () => {
       } catch (err) {
         console.log("택시 데이터 호출 에러" + err.message);
       }
+    }
+  };
+
+  const scrollToItem = (itemRefs, index) => {
+    if (itemRefs && itemRefs[index] && itemRefs[index].current) {
+      itemRefs[index].current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
+
+  const onClickJoinParty = async (item) => {
+    try {
+      const response = await axios.put(
+        `https://13.124.120.175/parties/${item.pid}/participate`
+      );
+
+      if (response.status === 200) {
+        toast.success("파티에 참가되었습니다.", {
+          autoClose: 1000,
+        });
+      }
+    } catch (e) {
+      console.log("Failed to join party", e);
+      toast.success("파티에 참가하지 못했습니다.", {
+        autoClose: 1000,
+      });
     }
   };
 
@@ -206,53 +214,29 @@ const ListComponent = () => {
     };
   }, [isCarpoolshow, target1]);
 
-  // useEffect(() => {
-  //   let observer1;
+  useEffect(() => {
+    setTaxiItemRefs(taxiItems.map(() => React.createRef()));
+  }, [taxiItems]);
 
-  //   if (target1 && !isCarpoolshow) {
-  //     setTaxiItems([]);
+  useEffect(() => {
+    setCarpoolItemRefs(carpoolItems.map(() => React.createRef()));
+  }, [carpoolItems]);
 
-  //     const onIntersect = async ([entry], observer1) => {
-  //       if (entry.isIntersecting) {
-  //         observer1.unobserve(entry.target);
-
-  //         if (taxiId === 0) {
-  //           await getInitialData("택시");
-  //         } else if (taxiId === -1) {
-  //           return () => observer1 && observer1.disconnect();
-  //         } else {
-  //           await fetchData("택시");
-  //         }
-  //         observer1.observe(entry.target);
-  //       }
-  //     };
-  //     observer1 = new IntersectionObserver(onIntersect, { threshold: 0.7 });
-  //     observer1.observe(target1);
-  //   }
-  //   return () => observer1 && observer1.disconnect();
-  // }, [target1, isCarpoolshow]);
-
-  // 파티 참여
-  // 자신이 만든 파티에 자신이 참여하는 상황 배제 필요
-  const onClickJoinParty = async (item) => {
-    try {
-      const response = await customAPI.put(`/parties/${item.pid}/participate`);
-
-      if (response.status === 200) {
-        console.log("Successfully joined party", response);
-      }
-    } catch (e) {
-      console.log("Failed to join party", e);
+  useEffect(() => {
+    console.log("dfdf");
+    if (itemInfo) {
+      console.log(itemInfo);
+      if (itemInfo.type === "카풀") scrollToItem(carpoolItems, itemInfo.pid);
+      else if (itemInfo.type === "택시") scrollToItem(taxiItems, itemInfo.pid);
     }
-  };
+  }, [itemInfo]);
 
   return (
-    // 각 listItem의 id는 코드 동작을 확인하기 위해 임시로 넣은 것이다.
     <Main>
       {isCarpoolshow
         ? carpoolItems.map((item, id) => {
             return (
-              <ListItem key={id}>
+              <ListItem key={id} ref={carpoolItemRefs[id]}>
                 <ListCarID>{item.pid}</ListCarID>
 
                 <ItemInfo>
@@ -273,7 +257,7 @@ const ListComponent = () => {
           })
         : taxiItems.map((item, id) => {
             return (
-              <ListItem key={id}>
+              <ListItem key={id} ref={taxiItemRefs[id]}>
                 <ListTaxiID>{item.pid}</ListTaxiID>
 
                 <ItemInfo>
@@ -302,14 +286,13 @@ const ListComponent = () => {
         </div>
       )}
 
-      {/* <div ref={setTarget}>this is the target</div> */}
+      <ToastContainer />
     </Main>
   );
 };
 
 export default ListComponent;
 
-// observer가 인식하는 뷰포트의 최대 크기는 100vh이다 그러나 화면에 맞추기 위해서는 threshold 값을 조정해야 한다.
 const Main = styled.div`
   postion: absolute;
   top: 0;
@@ -391,16 +374,6 @@ const CurrentMember = styled.div`
     //브라우저 크기 조절시 사라짐
     display: none;
   }
-`;
-
-const EmptyListBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  font-size: 25px;
-  color: gray;
 `;
 
 const JoinButton = styled.button`

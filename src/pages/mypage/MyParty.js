@@ -3,16 +3,14 @@ import styled from "styled-components";
 import { customAPI } from "../../customAPI";
 import taxiIcon from "./../../assets/icon/taxi.png";
 import carIcon from "./../../assets/icon/car.png";
-import { Container as MapDiv, Polyline } from "react-naver-maps";
+import { Container as MapDiv } from "react-naver-maps";
 import MapComponent from "../../components/UserMapComponent";
 import {
   CarpoolWritingState,
   TaxiWritingState,
-  showCarpoolState,
-  showTaxiState,
   isChatOnState,
 } from "../../atoms";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import CarpoolWritingComponent from "../../components/CarpoolWritingComponent";
 import TaxiWritingComponent from "../../components/TaxiWritingComponent";
 import ChatRoom from "../../pages/Chat.js";
@@ -75,7 +73,7 @@ const MyParty = () => {
         setPartyData((prev) => prev.concat(item));
       });
 
-      // console.log(partyData);
+      console.log(myList);
     } catch (err) {
       console.log("Faild to get Party Data", err);
     }
@@ -91,6 +89,36 @@ const MyParty = () => {
     handleScroll();
     setCarpoolWriting(false);
     setTaxiWriting(true);
+  };
+
+  const handlePartyConfirm = async (pid) => {
+    try {
+      const response = await customAPI.put(`/parties/${pid}/confirm`);
+
+      if (response.status === 200) {
+        toast.success("파티가 확정되었습니다.", {
+          autoClose: 900, // 자동 닫힘 지속 시간을 1초로 설정
+          onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handlePartyFinish = async (pid) => {
+    try {
+      const response = await customAPI.put(`/parties/${pid}/finish`);
+
+      if (response.status === 200) {
+        toast.success("파티가 종료되었습니다.", {
+          autoClose: 900, // 자동 닫힘 지속 시간을 1초로 설정
+          onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleDeleteButtonClick = async (id) => {
@@ -112,7 +140,7 @@ const MyParty = () => {
     setItem(item);
   };
 
-  const handleCloseMapClick = async (item) => {
+  const handleCloseMapClick = async () => {
     setIsMapOpen(false);
   };
 
@@ -167,9 +195,29 @@ const MyParty = () => {
                           >
                             지도 보기
                           </StyledButton>
-                          <StyledButton onClick={handleCarpoolButtonClick}>
-                            수정
-                          </StyledButton>
+                          {item.isConfirm === false &&
+                          item.isFinish === false ? (
+                            <StyledButton onClick={handleCarpoolButtonClick}>
+                              수정
+                            </StyledButton>
+                          ) : null}
+
+                          {!item.isConfirm ? (
+                            <StyledButton
+                              onClick={() => handlePartyConfirm(item.pid)}
+                            >
+                              파티 확정
+                            </StyledButton>
+                          ) : null}
+
+                          {!item.isFinish ? (
+                            <StyledButton
+                              onClick={() => handlePartyFinish(item.pid)}
+                            >
+                              파티 종료
+                            </StyledButton>
+                          ) : null}
+
                           <StyledButton
                             onClick={() => handleDeleteButtonClick(item.pid)}
                           >
@@ -207,9 +255,29 @@ const MyParty = () => {
                           >
                             지도 보기
                           </StyledButton>
-                          <StyledButton onClick={handleTaxiButtonClick}>
-                            수정
-                          </StyledButton>
+                          {item.isConfirm === false &&
+                          item.isFinish === false ? (
+                            <StyledButton onClick={handleTaxiButtonClick}>
+                              수정
+                            </StyledButton>
+                          ) : null}
+
+                          {!item.isConfirm ? (
+                            <StyledButton
+                              onClick={() => handlePartyConfirm(item.pid)}
+                            >
+                              파티 확정
+                            </StyledButton>
+                          ) : null}
+
+                          {!item.isFinish ? (
+                            <StyledButton
+                              onClick={() => handlePartyFinish(item.pid)}
+                            >
+                              파티 종료
+                            </StyledButton>
+                          ) : null}
+
                           <StyledButton
                             onClick={() => handleDeleteButtonClick(item.pid)}
                           >
@@ -292,16 +360,6 @@ const ContentBox = styled.div`
   border-radius: 30px;
 `;
 
-const CarPoolTypeHeader = styled.h3`
-  margin: 0 15px;
-  color: #0583f2;
-`;
-
-const TaxiTypeHeader = styled.h3`
-  margin: 0 15px;
-  color: yellow;
-`;
-
 const LocationBox = styled.div`
   margin: 0 15px;
   display: flex;
@@ -349,7 +407,6 @@ const MapBox = styled(MapDiv)`
   height: 65vh;
   position: absolute;
   top: ${(props) => props.top};
-  // top: 400px;
   left: 15%;
   transform: translate(-50%, -50%);
   border-radius: 10px;
@@ -363,8 +420,8 @@ const CloseMapButton = styled.button`
   margin-left: 10px;
   position: absolute;
   z-index: 1000;
-  top: -290px;
-  left: 55%;
+  top: -40%;
+  right: 40%;
 
   background-color: #fff;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);

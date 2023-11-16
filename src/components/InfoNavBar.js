@@ -44,9 +44,4 @@ const CustomNavLink = styled(Link)`
   }
 `;
 
-const StyledHeading = styled.h1`
-  text-align: left;
-  padding-bottom: 50px;
-`;
-
 export default InfoNavBar;

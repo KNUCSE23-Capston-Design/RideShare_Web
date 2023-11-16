@@ -6,7 +6,7 @@ import axios from "axios";
 // 이거 해결해야됨
 
 export const customAPI = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: "https://13.124.120.175/",
 });
 
 // 요청에 대한 인터셉터
@@ -49,7 +49,7 @@ customAPI.interceptors.response.use(
         // const axiosInstance = axios.create();
 
         const response = await axios.post(
-          "http://localhost:8080/members/reissue",
+          "https://13.124.120.175/members/reissue",
           {
             accessToken: accessToken,
             refreshToken: refreshToken,

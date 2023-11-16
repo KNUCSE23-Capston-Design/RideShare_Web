@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { NaverMap, Marker, useNavermaps, InfoWindow } from "react-naver-maps";
-import styled from "styled-components";
 import {
   isLoggedInState,
   showCarpoolState,
   showTaxiState,
-  CarpoolWritingState,
-  TaxiWritingState,
+  listItemInfo,
 } from "../atoms";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { customAPI } from "../customAPI";
-import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarMarker from "../assets/icon/CarMarker.png";
 import TaxiMarker from "../assets/icon/TaxiMarker_ver2.png";
-import UserMarker from "../assets/icon/UserMarker.png";
 
 const MapComponent = () => {
   const navermaps = useNavermaps();
@@ -28,6 +24,7 @@ const MapComponent = () => {
   const [myPartyData, setMyPartyData] = useState([]);
   const isCarpoolshow = useRecoilValue(showCarpoolState);
   const isTaxishow = useRecoilValue(showTaxiState);
+  const [itemInfo, setItemInfo] = useRecoilState(listItemInfo);
 
   function onSuccessGeolocation(position) {
     if (!map || !infowindow) return;
@@ -76,12 +73,22 @@ const MapComponent = () => {
     const location = new navermaps.LatLng(marker.latitude, marker.longitude);
 
     map.setZoom(14);
-    map.panTo(location); //화면 부드럽게 이동
+    map.panTo(location);
   }
+
+  const handleMovingCenter = (item) => {
+    if (!map || !item) return;
+
+    const location = new navermaps.LatLng(item.startLat, item.startLng);
+
+    map.setZoom(14);
+    map.panTo(location);
+    setItemInfo(null);
+  };
 
   const fetchCarpoolData = async () => {
     try {
-      const response = await customAPI.get(`http://localhost:8080/parties`, {
+      const response = await customAPI.get(`/parties`, {
         params: {
           type: "카풀",
           keyword: "",
@@ -94,14 +101,13 @@ const MapComponent = () => {
         longitude: parseFloat(item.startLng),
       }));
       setCarpoolData(markerData);
-      console.log(carpoolData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
   const fetchTaxiData = async () => {
     try {
-      const response = await customAPI.get(`http://localhost:8080/parties`, {
+      const response = await customAPI.get(`/parties`, {
         params: {
           type: "택시",
           keyword: "",
@@ -114,7 +120,6 @@ const MapComponent = () => {
         longitude: parseFloat(item.startLng),
       }));
       setTaxiData(markerData);
-      console.log(taxiData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -122,7 +127,6 @@ const MapComponent = () => {
 
   const getMyParty = async () => {
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 500));
       const response = await customAPI.get(`/members/participation-list/`, {});
 
       const myList = response.data;
@@ -143,29 +147,15 @@ const MapComponent = () => {
     }
   };
 
-  // const getRoutes = async () => {
-  //   try {
-  //     const response = await customAPI(
-  //       `https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=37.8688486697594,127.735245120657&goal=37.86369763697937,127.72376542374549`,
-  //       {
-  //         headers: {
-  //           "X-NCP-APIGW-API-KEY-ID": process.env.REACT_APP_NAVER_CLIENT_ID,
-  //           "X-NCP-APIGW-API-KEY": process.env.REACT_APP_NAVER_CLIENT_SECRET,
-  //         },
-  //       }
-  //     );
-
-  //     console.log(response);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
   useEffect(() => {
     fetchCarpoolData();
     fetchTaxiData();
     if (isLoggedIn) getMyParty();
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (itemInfo) handleMovingCenter(itemInfo);
+  }, [itemInfo]);
 
   useEffect(() => {
     if (!map || !infowindow) {
@@ -193,12 +183,6 @@ const MapComponent = () => {
       defaultMapTypeId={navermaps.MapTypeId.NORMAL}
       ref={setMap}
     >
-      {/* <Marker
-        position={{
-          lat: parseFloat(item.startLat),
-          lng: parseFloat(item.startLng),
-        }}
-      /> */}
       {!isTaxishow
         ? carpoolData.map((marker, index) => (
             <Marker

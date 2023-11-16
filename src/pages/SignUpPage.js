@@ -17,7 +17,7 @@ const SignUp = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("http://localhost:8080/members/join", {
+      const response = await fetch("https://13.124.120.175/members/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,25 +45,25 @@ const SignUp = () => {
   // 중복 여부 확인
   const checkForDuplicate = async (inputValue, fieldName) => {
     try {
-      const response = await fetch(`http://localhost:8080/members/check?${fieldName}=${inputValue}`);
-      if (response.ok) { //중복 없음
+      const response = await fetch(
+        `https://13.124.120.175/members/check?${fieldName}=${inputValue}`
+      );
+      if (response.ok) {
+        //중복 없음
         if (fieldName == "id") {
           setIdDuplicate(true);
-        }
-        else if (fieldName == "nickname") {
+        } else if (fieldName == "nickname") {
           setNicknameDuplicate(true);
-        }
-        else {
+        } else {
           setEmailDuplicate(true);
         }
-      } else { //중복 있음
+      } else {
+        //중복 있음
         if (fieldName == "id") {
           setIdDuplicate(false);
-        }
-        else if (fieldName == "nickname") {
+        } else if (fieldName == "nickname") {
           setNicknameDuplicate(false);
-        }
-        else {
+        } else {
           setEmailDuplicate(false);
         }
       }
@@ -88,12 +88,14 @@ const SignUp = () => {
         value={id}
         placeholder="ID"
         style={{
-          borderColor: IdDuplicate ? 'gray' : 'red',
-          borderWidth: IdDuplicate ? '1px' : '3px'
+          borderColor: IdDuplicate ? "gray" : "red",
+          borderWidth: IdDuplicate ? "1px" : "3px",
         }}
       />
       {IdDuplicate === false && (
-        <ErrorMessage>아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요.</ErrorMessage>
+        <ErrorMessage>
+          아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요.
+        </ErrorMessage>
       )}
       <Input
         onChange={(e) => setPassword(e.target.value)}
@@ -107,12 +109,14 @@ const SignUp = () => {
         value={nickname}
         placeholder="Nickname"
         style={{
-          borderColor: NicknameDuplicate ? 'gray' : 'red',
-          borderWidth: NicknameDuplicate ? '1px' : '3px'
+          borderColor: NicknameDuplicate ? "gray" : "red",
+          borderWidth: NicknameDuplicate ? "1px" : "3px",
         }}
       />
       {NicknameDuplicate === false && (
-        <ErrorMessage>닉네임: 사용할 수 없는 닉네임입니다. 다른 닉네임을 입력해 주세요.</ErrorMessage>
+        <ErrorMessage>
+          닉네임: 사용할 수 없는 닉네임입니다. 다른 닉네임을 입력해 주세요.
+        </ErrorMessage>
       )}
       <Input
         onChange={(e) => setEmail(e.target.value)}
@@ -121,12 +125,14 @@ const SignUp = () => {
         placeholder="Email"
         type="email"
         style={{
-          borderColor: EmailDuplicate ? 'gray' : 'red',
-          borderWidth: EmailDuplicate ? '1px' : '3px'
+          borderColor: EmailDuplicate ? "gray" : "red",
+          borderWidth: EmailDuplicate ? "1px" : "3px",
         }}
       />
       {EmailDuplicate === false && (
-        <ErrorMessage>이메일: 사용할 수 없는 이메일입니다. 다른 이메일을 입력해 주세요.</ErrorMessage>
+        <ErrorMessage>
+          이메일: 사용할 수 없는 이메일입니다. 다른 이메일을 입력해 주세요.
+        </ErrorMessage>
       )}
       <SignUpButton onClick={handleSignup}>
         <ButtonContainer>

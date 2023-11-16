@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useRecoilValue, useResetRecoilState } from "recoil";
+import { useResetRecoilState } from "recoil";
 import { TaxiWritingState } from "../atoms";
 import { customAPI } from "../customAPI";
 import { toast, ToastContainer } from "react-toastify";
@@ -34,8 +34,8 @@ const TaxiWritingComponent = () => {
 
   const showPopupMessage = () => {
     toast.success("등록 되었습니다.", {
-      autoClose: 1000, // 자동 닫힘 지속 시간을 1초로 설정
-      onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+      autoClose: 1000,
+      onClose: handleClose,
     });
   };
 
@@ -133,7 +133,7 @@ const TaxiWritingComponent = () => {
   const handleRegister = async () => {
     // 등록 클릭시 서버로 내용을 보내야함
     try {
-      const response = await customAPI.post("http://localhost:8080/parties", {
+      const response = await customAPI.post("/parties", {
         type: "택시",
         startPoint: taxiData.startPoint,
         startLat: taxiData.startLat,
@@ -147,11 +147,9 @@ const TaxiWritingComponent = () => {
       });
 
       if (response.status >= 200 && response.status < 300) {
-        // POST request was successful
         console.log("POST request was successful");
         showPopupMessage();
       } else {
-        // POST request was not successful
         console.log("POST request failed");
       }
     } catch (error) {
@@ -179,7 +177,7 @@ const TaxiWritingComponent = () => {
             type="text"
             value={taxiData.startPoint}
             onClick={() => handlePostcode("startPoint")} // 입력을 클릭하면 다음 우편번호 팝업을 엽니다.
-            readOnly // 입력 필드의 수동 편집 방지
+            readOnly
           />
         </InputContainer>
         <InputContainer>
@@ -187,8 +185,8 @@ const TaxiWritingComponent = () => {
           <InputField
             type="text"
             value={taxiData.endPoint}
-            onClick={() => handlePostcode("endPoint")} // 입력을 클릭하면 다음 우편번호 팝업을 엽니다.
-            readOnly // 입력 필드의 수동 편집 방지
+            onClick={() => handlePostcode("endPoint")}
+            readOnly
           />
         </InputContainer>
         <InputContainer>

@@ -26,7 +26,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       // 로그인 자격 증명을 확인하기 위해 서버에 API 요청
-      const response = await fetch("http://localhost:8080/members/login", {
+      const response = await fetch("https://13.124.120.175/members/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Login = () => {
   const fetchUserInfo = async () => {
     try {
       const response = await customAPI.get(
-        `http://localhost:8080/members/me`,
+        `https://13.124.120.175/members/me`,
         {}
       );
       const data = response.data;
@@ -126,12 +126,6 @@ const StyledContainer = styled.div`
   justify-content: flex-start;
   background-color: #ffffff;
   padding-top: 10vh;
-`;
-
-const LogoImage = styled.img`
-  width: 270px;
-  height: 60px;
-  margin: 5px;
 `;
 
 const Input = styled.input`

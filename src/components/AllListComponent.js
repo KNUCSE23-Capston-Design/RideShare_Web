@@ -27,7 +27,6 @@ const AllListComponent = () => {
   };
 
   const getInitialData = async () => {
-    // console.log("initial data");
     try {
       const response = await customAPI.get(`/parties`, {
         params: {
@@ -74,8 +73,6 @@ const AllListComponent = () => {
         itemId = data[data.length - 1].pid;
         setListItems((prev) => prev.concat(data));
       }
-
-      console.log(data);
     } catch (err) {
       console.log("전체 리스트 데이터 호출 에러" + err.message);
     }
@@ -91,9 +88,8 @@ const AllListComponent = () => {
 
       showPopupMessage();
     } catch (e) {
-      toast.success(e.response.data.message, {
-        autoClose: 1000, // 자동 닫힘 지속 시간을 1초로 설정
-        // onClose: handleClose, // 토스트가 닫히면 글쓰기 창 닫기() 실행
+      toast.success("파티에 참가하지 못했습니다.", {
+        autoClose: 1000,
       });
     }
   };
@@ -171,7 +167,6 @@ const AllListComponent = () => {
 
 export default AllListComponent;
 
-// observer가 인식하는 뷰포트의 최대 크기는 100vh이다 그러나 화면에 맞추기 위해서는 threshold 값을 조정해야 한다.
 const Main = styled.div`
   postion: absolute;
   top: 0;

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Container as MapDiv, Polyline } from "react-naver-maps";
+import { Container as MapDiv } from "react-naver-maps";
 import { customAPI } from "../../customAPI";
-import { isChatOnState } from "../../atoms";
+import { isChatOnState, ReviewWritingState } from "../../atoms";
 import { useRecoilState } from "recoil";
 import MapComponent from "../../components/UserMapComponent";
+import ReviewComponent from "../../components/ReviewComponent";
 import ChatRoom from "../../pages/Chat.js";
 import taxiIcon from "./../../assets/icon/taxi.png";
 import carIcon from "./../../assets/icon/car.png";
@@ -20,6 +21,7 @@ const MyParty = () => {
 
   const [item, setItem] = useState([]);
   const [isChatOn, setIsChatOn] = useRecoilState(isChatOnState);
+  const [reviewWriting, setReviewWriting] = useRecoilState(ReviewWritingState);
 
   const handleChatButtonClicked = (item) => {
     setItem(item);
@@ -42,7 +44,7 @@ const MyParty = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isMapOpen]);
 
   const showPopupMessage = () => {
     toast.success("파티를 나갔습니다.", {
@@ -56,7 +58,6 @@ const MyParty = () => {
   };
 
   const getMyParty = async () => {
-    // console.log("get my party");
     try {
       const response = await customAPI.get(`/members/participation-list`, {});
 
@@ -64,8 +65,6 @@ const MyParty = () => {
       myList.map((item) => {
         setPartyData((prev) => prev.concat(item));
       });
-
-      // console.log(partyData);
     } catch (err) {
       console.log("Faild to get Party Data", err);
     }
@@ -85,12 +84,17 @@ const MyParty = () => {
     }
   };
 
+  const handleReviewButtonClick = async (item) => {
+    setItem(item);
+    setReviewWriting(true);
+  };
+
   const handleMapViewClick = async (item) => {
     setIsMapOpen(true);
     setItem(item);
   };
 
-  const handleCloseMapClick = async (item) => {
+  const handleCloseMapClick = async () => {
     setIsMapOpen(false);
   };
 
@@ -145,11 +149,19 @@ const MyParty = () => {
                           >
                             지도 보기
                           </StyledButton>
-                          <StyledButton
-                            onClick={() => handleDeleteButtonClick(item.pid)}
-                          >
-                            파티 나가기
-                          </StyledButton>
+                          {!item.isFinish ? (
+                            <StyledButton
+                              onClick={() => handleDeleteButtonClick(item.pid)}
+                            >
+                              파티 나가기
+                            </StyledButton>
+                          ) : (
+                            <StyledButton
+                              onClick={() => handleReviewButtonClick(item)}
+                            >
+                              후기
+                            </StyledButton>
+                          )}
                         </ButtonBox>
                       </ContentBox>
                     ) : (
@@ -183,11 +195,19 @@ const MyParty = () => {
                             지도 보기
                           </StyledButton>
 
-                          <StyledButton
-                            onClick={() => handleDeleteButtonClick(item.pid)}
-                          >
-                            파티 나가기
-                          </StyledButton>
+                          {!item.isFinish ? (
+                            <StyledButton
+                              onClick={() => handleDeleteButtonClick(item.pid)}
+                            >
+                              파티 나가기
+                            </StyledButton>
+                          ) : (
+                            <StyledButton
+                              onClick={() => handleReviewButtonClick()}
+                            >
+                              후기
+                            </StyledButton>
+                          )}
                         </ButtonBox>
                       </ContentBox>
                     )}
@@ -197,6 +217,7 @@ const MyParty = () => {
             : null}
         </MainBox>
       </CenteredContent>
+      {reviewWriting && <ReviewComponent pid={item.pid} />}
       {isChatOn && <ChatRoom item={item} />}
       <ToastContainer />
       {isMapOpen && (
@@ -205,7 +226,6 @@ const MyParty = () => {
             top: `${top}`,
             position: "absolute",
             left: "42%",
-            overflow: "hidden",
           }}
         >
           <MapBox>
@@ -262,16 +282,6 @@ const ContentBox = styled.div`
   align-items: center;
   border: 1px solid #0583f2;
   border-radius: 30px;
-`;
-
-const CarPoolTypeHeader = styled.h3`
-  margin: 0 15px;
-  color: #0583f2;
-`;
-
-const TaxiTypeHeader = styled.h3`
-  margin: 0 15px;
-  color: yellow;
 `;
 
 const LocationBox = styled.div`
@@ -344,8 +354,8 @@ const CloseMapButton = styled.button`
   margin-left: 10px;
   position: absolute;
   z-index: 1000;
-  top: -290px;
-  left: 55%;
+  top: -40%;
+  right: 40%;
 
   background-color: #fff;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../../atoms";
 import { customAPI } from "../../customAPI";
 import styled from "styled-components";
@@ -11,7 +11,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 const InfoProfile = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-  const [userInfo, setUserInfo] = useState({ id: "", pw: "", nickname: "" });
+  const [userInfo, setUserInfo] = useState({
+    id: "",
+    pw: "",
+    nickname: "",
+    score: "",
+  });
   const [changeNic, setChangeNic] = useState(false);
   const [nickname, setNickname] = useState("");
   const navigate = useNavigate();
@@ -53,12 +58,15 @@ const InfoProfile = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await customAPI.get(
-        `http://localhost:8080/members/me`,
-        {}
-      );
+      const response = await customAPI.get(`/members/me`, {});
       const data = response.data;
-      setUserInfo({ id: data.id, pw: data.pw, nickname: data.nickname });
+      console.log(data);
+      setUserInfo({
+        id: data.id,
+        pw: data.pw,
+        nickname: data.nickname,
+        score: data.score,
+      });
     } catch (error) {
       console.error("Failed to fetch user information:", error);
     }
@@ -137,20 +145,6 @@ const InfoProfile = () => {
   };
 
   const changePassword = async () => {
-    // 서버의 중복 체크 또는 기존 비밀번호가 암호화되어 있기 때문에 확인 불가능. 서버에서 처리하는 것이 나을것.
-    // 필요 기능 : 비밀번호 중복체크
-    // if (userInfo.pw === newPassword) {
-    //   // 해당 기능은 렌더링 또는 알람형식으로 사용자가 인식할 수 있게 변경.
-    //   console.log("기존 비밀번호과 동일합니다.");
-    //   return;
-    // }
-    // if (userInfo.pw !== pw) {
-    //   // 해당 기능은 렌더링 또는 알람형식으로 사용자가 인식할 수 있게 변경.
-    //   console.log("기존 비밀번호가 틀립니다.");
-    //   console.log(userInfo.pw, pw);
-    //   return;
-    // }
-
     if (newPassword !== checkNewPassword) {
       setPasswordsDoNotMatch(true);
     } else {
@@ -204,6 +198,16 @@ const InfoProfile = () => {
                 <StyledButton>사진 변경</StyledButton>
                 <StyledButton>사진 삭제</StyledButton>
               </TestBox>
+            </StyledCell>
+          </StyledRow>
+          <StyledRow>
+            <StyledTitleCell>
+              <SellText>나의 점수</SellText>
+            </StyledTitleCell>
+            <StyledCell>
+              <SellText style={{ marginLeft: "20px" }}>
+                {userInfo.score === null ? "0점" : userInfo.score}
+              </SellText>
             </StyledCell>
           </StyledRow>
           <StyledRow>
@@ -314,11 +318,6 @@ const CenteredContent = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 1%;
-`;
-
-const StyledHeading = styled.h1`
-  text-align: left;
-  padding-bottom: 50px;
 `;
 
 const StyledTable = styled.div`

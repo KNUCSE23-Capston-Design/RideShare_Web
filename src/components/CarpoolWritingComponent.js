@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useRecoilValue, useResetRecoilState } from "recoil";
+import { useResetRecoilState } from "recoil";
 import { CarpoolWritingState } from "../atoms";
 import { customAPI } from "../customAPI";
 import { toast, ToastContainer } from "react-toastify";
@@ -68,7 +68,7 @@ const CarpoolWritingComponent = () => {
             const { documents } = response.data;
             if (documents.length > 0) {
               const { y: lat, x: lng } = documents[0].address;
-              console.log(lat, lng);
+
               setCarpoolData((prevState) => ({
                 ...prevState,
                 startLat: lat,
@@ -101,7 +101,6 @@ const CarpoolWritingComponent = () => {
             const { documents } = response.data;
             if (documents.length > 0) {
               const { y: lat, x: lng } = documents[0].address;
-              console.log(lat, lng);
               setCarpoolData((prevState) => ({
                 ...prevState,
                 endLat: lat,
@@ -135,7 +134,7 @@ const CarpoolWritingComponent = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await customAPI.post("http://localhost:8080/parties", {
+      const response = await customAPI.post("/parties", {
         type: "카풀",
         startPoint: carpoolData.startPoint,
         startLat: carpoolData.startLat,
@@ -151,11 +150,9 @@ const CarpoolWritingComponent = () => {
       });
 
       if (response.status >= 200 && response.status < 300) {
-        // POST request was successful
         console.log("POST request was successful");
         showPopupMessage();
       } else {
-        // POST request was not successful
         console.log("POST request failed");
       }
     } catch (error) {
@@ -163,31 +160,25 @@ const CarpoolWritingComponent = () => {
     }
   };
 
-  // 컴포넌트가 마운트될 때 스크롤 이벤트 리스너 등록
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
 
-    // 컴포넌트가 언마운트될 때 리스너 제거
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  useEffect(() => {
-    console.log(isPopupOpen);
-  }, [isPopupOpen]);
-
   return (
     <>
       <Container top={top}>
-        <Title>카풀 글쓰기</Title> {/* Added title */}
+        <Title>카풀 글쓰기</Title>
         <InputContainer>
           <InputLabel>출발지</InputLabel>
           <InputField
             type="text"
             value={carpoolData.startPoint}
-            onClick={() => handlePostcode("startPoint")} // 입력을 클릭하면 다음 우편번호 팝업을 엽니다.
-            readOnly // 입력 필드의 수동 편집 방지
+            onClick={() => handlePostcode("startPoint")}
+            readOnly
           />
         </InputContainer>
         <InputContainer>
@@ -195,8 +186,8 @@ const CarpoolWritingComponent = () => {
           <InputField
             type="text"
             value={carpoolData.endPoint}
-            onClick={() => handlePostcode("endPoint")} // 입력을 클릭하면 다음 우편번호 팝업을 엽니다.
-            readOnly // 입력 필드의 수동 편집 방지
+            onClick={() => handlePostcode("endPoint")}
+            readOnly
           />
         </InputContainer>
         <InputContainer>

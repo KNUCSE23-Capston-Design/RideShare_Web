@@ -4,7 +4,7 @@ module.exports = (app) => {
   app.use(
     "ws",
     createProxyMiddleware({
-      target: "http://localhost:8080",
+      target: "https://13.124.120.175",
       ws: true,
     })
   );

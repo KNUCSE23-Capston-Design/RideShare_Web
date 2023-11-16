@@ -1,6 +1,6 @@
-import React, { useCallBack, useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userId, isChatOnState } from "../atoms";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { customAPI } from "../customAPI";
@@ -9,9 +9,7 @@ import * as StompJs from "@stomp/stompjs";
 
 const ChatRoom = (props) => {
   const listitem = props.item;
-  let navigate = useNavigate();
   const id = useRecoilValue(userId);
-  const token = sessionStorage.getItem("accessToken");
   const [client, setClient] = useState(null);
   const [chat, setChat] = useState("");
   const [chatList, setChatList] = useState([]);
@@ -24,24 +22,6 @@ const ChatRoom = (props) => {
     const scrollTop = window.scrollY;
     setTop(scrollTop + window.innerHeight / 2 + "px"); // top 값을 문자열로 변경
   };
-
-  // const msgBox = chatList.map((item, idx) => {
-  //   if (item.sender === id) {
-  //     return (
-  //       <div key={idx}>
-  //         <ChatItem>{item.message}</ChatItem>
-  //         <ChatItem>{item.time}</ChatItem>
-  //       </div>
-  //     );
-  //   } else {
-  //     return (
-  //       <div key={idx}>
-  //         <ChatItem1>{item.message}</ChatItem1>
-  //         <ChatItem1>{item.time}</ChatItem1>
-  //       </div>
-  //     );
-  //   }
-  // });
 
   const msgBox = chatList.map((item, idx) => {
     const isUser = item.sender === id;
@@ -82,9 +62,7 @@ const ChatRoom = (props) => {
     try {
       const clientdata = new StompJs.Client({
         brokerURL: "ws://localhost:8080/stomp",
-        // connectHeaders: {
-        // 토큰이 혹시 필요하면 여기에
-        // },
+
         debug: function (str) {
           console.log(str);
         },
@@ -169,10 +147,6 @@ const ChatRoom = (props) => {
 
   const onChangeChat = (e) => {
     setChat(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
   };
 
   const onClickChatOff = () => {

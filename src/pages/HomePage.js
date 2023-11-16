@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Container as MapDiv, Polyline } from "react-naver-maps";
+import React, { useState } from "react";
+import { Container as MapDiv } from "react-naver-maps";
 import styled from "styled-components";
 import AllListComponent from "../components/AllListComponent";
 import ListComponent from "../components/ListComponent";
 import MapComponent from "../components/MapComponent";
 import CarpoolWritingComponent from "../components/CarpoolWritingComponent";
 import TaxiWritingComponent from "../components/TaxiWritingComponent";
+import SearchComponent from "../components/SearchComponent";
 import {
   showTaxiState,
   showCarpoolState,
@@ -14,8 +15,6 @@ import {
   isLoggedInState,
 } from "../atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
-import taxiIcon from "../assets/icon/taxi.png";
-import carIcon from "../assets/icon/car.png";
 
 const Home = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
@@ -55,19 +54,15 @@ const Home = () => {
           <ContentBox>
             {isButtonClicked ? (
               <SetListButton onClick={onClickButton}>
-                목록 열기 &lt;
+                목록 닫기 &lt;
               </SetListButton>
             ) : (
               <SetListButton onClick={onClickButton}>
-                목록 닫기 &gt;
+                목록 열기 &gt;
               </SetListButton>
             )}
 
-            <DestinationInput
-              type="text"
-              name="inputName"
-              placeholder="목적지를 입력하시오"
-            />
+            <SearchComponent />
             {(!isCarpoolshow && !isTaxishow) || !isLoggedIn ? (
               <CarpoolButton style={{ visibility: "hidden" }}>
                 카풀 글쓰기
@@ -124,27 +119,10 @@ const ContentBox = styled.div`
   justify-content: space-between;
 `;
 
-const DestinationInput = styled.input`
-  width: 500px;
-  height: 40px;
-  text-indent: 20px;
-  font-size: 16px;
-  font-family: "Noto Sans KR", sans-serif;
-
-  border-radius: 15px;
-  border: 2px solid #0583f2;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-  z-index: 999;
-
-  :focus {
-    outline: none;
-    border: 2px solid #0583f2;
-  }
-`;
-
 const SetListButton = styled.button`
   padding: 10px;
   margin-left: 10px;
+  height: 44px;
 
   background-color: #fff;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);

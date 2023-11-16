@@ -29,6 +29,10 @@ export const CarpoolWritingState = atom({
   key: "CarpoolWritingState",
   default: false,
 });
+export const ReviewWritingState = atom({
+  key: "ReviewWritingState",
+  default: false,
+});
 export const isMapLoadingState = atom({
   key: "isMapLoadingState",
   default: false,
@@ -58,3 +62,8 @@ export const myPartyDataState = atom({
 });
 export const userId = atom({ key: "userId", default: null });
 export const isChatOnState = atom({ key: "isChatOnState", default: false });
+
+export const listItemInfo = atom({
+  key: "listItemInfo",
+  default: null,
+});

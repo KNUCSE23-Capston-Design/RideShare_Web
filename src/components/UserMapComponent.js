@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { NaverMap, Marker, useNavermaps, InfoWindow } from "react-naver-maps";
-import styled from "styled-components";
-import { isLoggedInState, showCarpoolState, showTaxiState } from "../atoms";
+import { isLoggedInState } from "../atoms";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { customAPI } from "../customAPI";
-import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarMarker from "../assets/icon/CarMarker.png";
 import TaxiMarker from "../assets/icon/TaxiMarker_ver2.png";
-import UserMarker from "../assets/icon/UserMarker.png";
 
 const MapComponent = (props) => {
   const item = props.item;
