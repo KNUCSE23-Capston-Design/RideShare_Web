@@ -140,7 +140,7 @@ const ListComponent = () => {
   const onClickJoinParty = async (item) => {
     try {
       const response = await axios.put(
-        `https://13.124.120.175/parties/${item.pid}/participate`
+        `https://knu-rideshare.site:8080/${item.pid}/participate`
       );
 
       if (response.status === 200) {

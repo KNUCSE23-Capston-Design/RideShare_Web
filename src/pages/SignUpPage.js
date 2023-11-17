@@ -17,18 +17,21 @@ const SignUp = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("https://13.124.120.175/members/join", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          pw: password,
-          nickname,
-          email,
-        }),
-      });
+      const response = await fetch(
+        "https://knu-rideshare.site:8080/members/join",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id,
+            pw: password,
+            nickname,
+            email,
+          }),
+        }
+      );
 
       if (response.ok) {
         // 회원가입 성공
@@ -46,7 +49,7 @@ const SignUp = () => {
   const checkForDuplicate = async (inputValue, fieldName) => {
     try {
       const response = await fetch(
-        `https://13.124.120.175/members/check?${fieldName}=${inputValue}`
+        `https://knu-rideshare.site:8080/members/check?${fieldName}=${inputValue}`
       );
       if (response.ok) {
         //중복 없음

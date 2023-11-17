@@ -26,16 +26,19 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       // 로그인 자격 증명을 확인하기 위해 서버에 API 요청
-      const response = await fetch("https://13.124.120.175/members/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: id,
-          pw: password,
-        }),
-      });
+      const response = await fetch(
+        "https://knu-rideshare.site:8080/members/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id,
+            pw: password,
+          }),
+        }
+      );
 
       if (response.ok) {
         // 로그인 성공
@@ -65,10 +68,7 @@ const Login = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await customAPI.get(
-        `https://13.124.120.175/members/me`,
-        {}
-      );
+      const response = await customAPI.get(`/members/me`);
       const data = response.data;
       setMyId(data.nickname);
     } catch (error) {

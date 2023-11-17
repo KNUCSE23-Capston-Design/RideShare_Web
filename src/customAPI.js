@@ -6,7 +6,7 @@ import axios from "axios";
 // 이거 해결해야됨
 
 export const customAPI = axios.create({
-  baseURL: "https://13.124.120.175/",
+  baseURL: "https://knu-rideshare.site:8080/",
 });
 
 // 요청에 대한 인터셉터
@@ -49,7 +49,7 @@ customAPI.interceptors.response.use(
         // const axiosInstance = axios.create();
 
         const response = await axios.post(
-          "https://13.124.120.175/members/reissue",
+          "https://knu-rideshare.site:8080/members/reissue",
           {
             accessToken: accessToken,
             refreshToken: refreshToken,
@@ -70,20 +70,6 @@ customAPI.interceptors.response.use(
       } catch (err) {
         window.alert("Error: " + err.message);
         console.log("토큰 갱신 error: " + err.response.data.message);
-        // const t = getCookieToken();
-        // const a = sessionStorage.getItem("accessToken");
-        // console.log(a);
-        // console.log(t);
-        // if (
-        //   err.response.data.message === "Refresh Token이 유효하지 않습니다." ||
-        //   err.response.data.message ===
-        //     "로그아웃된 사용자입니다. Refresh Token이 존재하지 않습니다." ||
-        //   err.response.data.message ===
-        //     "Refresh Token이 일치하지 않거나 만료되었습니다." ||
-        //   err.response.data.message === "Access Token이 만료되었습니다."
-        // ) {
-        //   window.location.href = "http://localhost:3000/login";
-        // }
       }
 
       return Promise.reject(err);

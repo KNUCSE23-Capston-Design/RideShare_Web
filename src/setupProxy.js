@@ -4,7 +4,7 @@ module.exports = (app) => {
   app.use(
     "ws",
     createProxyMiddleware({
-      target: "https://13.124.120.175",
+      target: "https://knu-rideshare.site:8080/",
       ws: true,
     })
   );
